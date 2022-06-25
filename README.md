@@ -1,70 +1,138 @@
-# Getting Started with Create React App
+/*
+ * @Author: zendu 
+ * @Date: 2022-06-22 18:46:24 
+ * @Last Modified by: zendu
+ * @Last Modified time: 2022-06-25 14:00:05
+ */
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
-## Available Scripts
+Todo
+1. Js解析XLSX数据格式
+    a.xlsx读取Excel文件，转为table可以辩识的数据格式」
+    
+    ​		了解xlsx读取的数据格式
+    
+    ​		了解table接收的数据格式
+    
+    ​	    编写covert函数
+    
+    b. 支持表格事件点击
+    c. 支持修改值
+    d. 支持批量导入
+    
+2. 将数据形成Table
 
-In the project directory, you can run:
+3. 单张Table的数据可视化
 
-### `npm start`
+4. 多张Table的数据可视化
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
 
-### `npm test`
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
 
-### `npm run build`
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
 
-### `npm run eject`
+# XLSX
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+1.   JSON
+2.   Sheet
+3.   Book
+4.   XLSX
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+```javascript
+// ====== 1
+let json = [
+  {name: 'zven',age: 20},
+  {name: 'nancy',age: 29},
+]
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+// ====== 2
+let sheet = XLSX.utils.json_to_sheet(json);
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+// ====== 3
+let workbook = XLSX.utils.book_new();
+XLSX.utils.book_append_sheet(workbook,sheet,"sheetName");
 
-## Learn More
+// ====== 4
+XLSX.writeFile(workbook,"workbookName.xlsx");
+```
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
 
-To learn React, check out the [React documentation](https://reactjs.org/).
 
-### Code Splitting
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
 
-### Analyzing the Bundle Size
+# 数据类型
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+1.   xlsx读取excel文件后生成的数据 BookSheet格式
+2.   xlsxt将booksheet转为json后的格式
+3.   table所需要的row和column的格式
+4.   echarts option需要的格式
 
-### Making a Progressive Web App
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
 
-### Advanced Configuration
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
 
-### Deployment
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
 
-### `npm run build` fails to minify
+Roadmap：
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+1.   获取数据
+2.   提取数据
+3.   处理数据
+4.   打包数据
+5.   发布数据
+
+从HTML现有的Table DOM 提取数据，将其打包为xlsx文件
+
+>   https://docs.sheetjs.com/docs/getting-started/roadmap
+
+
+
+
+
+
+
+# Todo & Done
+
+- [x] 读取Excel文件并转换为Table可以辩识的数据格式
+
+    - [ ] ps：不能用useState，会显示无限循环
+- [x] 设定table的单击事件，点击后格式化选中行的数据，并赋值到Echarts图形
+
+
+
+
+
+
+
+
+
+- [ ] 整理项目格式，包括Table的操作以及Table Click事件后向Echarts的传参
+- [ ] 单表的数据操作，比如叠加`交易性金融资产`和`货币资金`，或纵向的叠加
+- [ ] 多表的数据操作，叠加不同表，不同列的数值，比如不同银行不同时间段的ROE
+
+
+
+
+
+
+![image-20220625180940297](img/image-20220625180940297.png)
+
+
+
+
+
+# Reference
+
+xlsx_component  https://docs.sheetjs.com/docs/example/
+
+table_component https://ali-react-table.js.org/docs/table/basic-usage/
+
+explain about xlsx 1  https://www.cnblogs.com/liuxianan/p/js-excel.html
+
+React Data Table Component  https://react-data-table-component.netlify.app/?path=/docs/api-props--page
+
+
+
