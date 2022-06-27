@@ -1,9 +1,0 @@
-.costum_table > div {
-  width: 90%;
-  height: 50vh;
-  overflow: scroll;
-}
-.costum_table {
-  display: flex;
-  justify-content: center;
-}

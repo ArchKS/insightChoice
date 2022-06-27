@@ -1,14 +1,10 @@
 import React, { useState } from "react";
 import DataTable from "react-data-table-component";
-import {
-  getFirstJsonFromSheet,
-  generateColoumAndRow,
-  echartsOptions,
-} from "./util";
-import sheetJSON from "./dataType/json";
-import * as echarts from "echarts";
 import ReactECharts from "echarts-for-react";
-import "./App.css";
+import "./App.less";
+import { generateColoumAndRow, getFirstJsonFromSheet } from "./utils/sheetTool";
+import sheetJSON from "./typeExample/json";
+import { echartsOptions } from "./utils/echartRel";
 
 function App() {
   let [rows, setRows] = useState([]);
@@ -16,11 +12,8 @@ function App() {
   let [options, setOptions] = useState({});
 
   let [c, r] = generateColoumAndRow(sheetJSON);
-  
-  const ExpandedComponent = ({ data }) => <pre>{JSON.stringify(data, null, 0)}</pre>;
 
-
-  const getJsonData = async (e) => {
+  const getJsonData = async (e: any) => {
     let jsonData = await getFirstJsonFromSheet(e);
     console.log(jsonData);
     let [r, c] = generateColoumAndRow(jsonData);
@@ -28,7 +21,7 @@ function App() {
     setColumns(c);
   };
 
-  const clickTable = (a, b) => {
+  const clickTable = (a: any, b: any) => {
     // a: {
     //     "__EMPTY": "买入返售金融资产(亿元)",
     //     "2002年年报": 28.1,
@@ -65,8 +58,6 @@ function App() {
         },
       },
     ];
-    console.log(echartsOptions);
-
     setOptions(Object.assign({}, echartsOptions));
   };
 
@@ -77,11 +68,13 @@ function App() {
         <DataTable
           columns={c}
           data={r}
-          onRowClicked={(a, b) => {
+          onRowClicked={(a: any, b: any) => {
             clickTable(a, b);
           }}
-          expandableRows
-          expandableRowsComponent={ExpandedComponent}
+          selectableRows
+          onSelectedRowsChange={(evt: any) => {
+            console.log(evt);
+          }}
         />
       </div>
 
@@ -89,7 +82,7 @@ function App() {
         option={options}
         theme={"vintage"}
         style={{ height: "600px" }}
-        
+
       ></ReactECharts>
     </div>
   );
