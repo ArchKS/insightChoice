@@ -16,6 +16,9 @@ function App() {
   let [options, setOptions] = useState({});
 
   let [c, r] = generateColoumAndRow(sheetJSON);
+  
+  const ExpandedComponent = ({ data }) => <pre>{JSON.stringify(data, null, 0)}</pre>;
+
 
   const getJsonData = async (e) => {
     let jsonData = await getFirstJsonFromSheet(e);
@@ -24,6 +27,49 @@ function App() {
     setRows(r);
     setColumns(c);
   };
+
+  const clickTable = (a, b) => {
+    // a: {
+    //     "__EMPTY": "买入返售金融资产(亿元)",
+    //     "2002年年报": 28.1,
+    //     "2003年年报": 102.14,
+    //     "2004年年报": 111.32,
+    // ......
+    // }
+
+    let rawXasix = Object.keys(a).filter((v) => v !== "__EMPTY");
+    let rawYaxis = rawXasix.map((v) => a[v]);
+    let processXaxis = rawXasix.map((v) => v.replace(/^(\d+).*$/, "$1"));
+
+    echartsOptions.xAxis = {
+      type: "category",
+      data: processXaxis,
+    };
+    echartsOptions.series = [
+      {
+        data: rawYaxis,
+        type: "line",
+        name: a.__EMPTY,
+        markPoint: {
+          data: [
+            {
+              type: "max",
+            },
+            {
+              type: "min",
+            },
+          ],
+        },
+        markLine: {
+          data: [{ type: "average" }],
+        },
+      },
+    ];
+    console.log(echartsOptions);
+
+    setOptions(Object.assign({}, echartsOptions));
+  };
+
   return (
     <div>
       {/* <input id="upfile" type="file" accept=".xlsx,.xls" onChange={getJsonData} /> */}
@@ -32,48 +78,10 @@ function App() {
           columns={c}
           data={r}
           onRowClicked={(a, b) => {
-            // {
-            //     "__EMPTY": "买入返售金融资产(亿元)",
-            //     "2002年年报": 28.1,
-            //     "2003年年报": 102.14,
-            //     "2004年年报": 111.32,
-            // ......
-            // }
-
-            let rawXasix = Object.keys(a).filter((v) => v != "__EMPTY");
-            let rawYaxis = rawXasix.map((v) => a[v]);
-            let processXaxis = rawXasix.map((v) =>
-              v.replace(/^(\d+).*$/, "$1")
-            );
-
-            echartsOptions.xAxis = {
-              type: "category",
-              data: processXaxis,
-            };
-            echartsOptions.series = [
-              {
-                data: rawYaxis,
-                type: "line",
-                name: a.__EMPTY,
-                markPoint: {
-                  data: [
-                    {
-                      type: "max",
-                    },
-                    {
-                      type: "min",
-                    },
-                  ],
-                },
-                markLine: {
-                  data: [{ type: "average" }],
-                },
-              },
-            ];
-            console.log(echartsOptions);
-
-            setOptions(Object.assign({}, echartsOptions));
+            clickTable(a, b);
           }}
+          expandableRows
+          expandableRowsComponent={ExpandedComponent}
         />
       </div>
 
@@ -81,6 +89,7 @@ function App() {
         option={options}
         theme={"vintage"}
         style={{ height: "600px" }}
+        
       ></ReactECharts>
     </div>
   );
