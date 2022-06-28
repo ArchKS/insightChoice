@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import DataTable from "react-data-table-component";
 import ReactECharts from "echarts-for-react";
-import "./App.less";
 import { generateColoumAndRow, getFirstJsonFromSheet } from "./utils/sheetTool";
 import sheetJSON from "./typeExample/json";
 import { echartsOptions } from "./utils/echartRel";
@@ -64,7 +63,7 @@ function App() {
   return (
     <div>
       {/* <input id="upfile" type="file" accept=".xlsx,.xls" onChange={getJsonData} /> */}
-      <div className="costum_table">
+      {/* <div className="costum_table">
         <DataTable
           columns={c}
           data={r}
@@ -83,7 +82,7 @@ function App() {
         theme={"vintage"}
         style={{ height: "600px" }}
 
-      ></ReactECharts>
+      ></ReactECharts> */}
     </div>
   );
 }
