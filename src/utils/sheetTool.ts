@@ -6,19 +6,17 @@ import * as XLSX from "xlsx";
  */
 
 // 1. input change event
-export function getFirstJsonFromSheet(e: any) { // json.js
+export function getFirstJsonFromSheet(file: any) { // json.js
     return new Promise((resolve, reject) => {
-        let file = e.target.files[0];
         let reader = new FileReader();
         reader.readAsBinaryString(file);
         reader.onload = (evt: any) => {
             let result = evt.target.result;
             let xlsxData = XLSX.read(result, { type: "binary" });
             for (let sheetName in xlsxData.Sheets) {
-                let singleWorkSheet = xlsxData.Sheets[sheetName];                     // sheetToJson:sheet
-                let json = XLSX.utils.sheet_to_json(singleWorkSheet, { defval: "" }); // sheetToJson:json
-                // json = removeEmpty(json);
-                // 这里是只读取一张表  // aliTable:dataSource & columns
+                let singleWorkSheet = xlsxData.Sheets[sheetName];
+                let json = XLSX.utils.sheet_to_json(singleWorkSheet, { defval: "" });
+                // 这里是只读取一张表 
                 resolve(json);
                 return;
             }
