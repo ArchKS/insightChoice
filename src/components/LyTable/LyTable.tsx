@@ -1,15 +1,16 @@
 import React from 'react'
 import { Divider, Radio, Table } from 'antd';
-import {datas,columns} from '../../utils/tool'
+import { iTableRecv } from '../../type'
 
-export default class LyTableC extends React.Component {
-    render() {
-        return (
-            <Table
-                rowSelection={{type: 'checkbox'}}
-                columns={columns}
-                dataSource={datas}
-            />
-        )
-    }
+export default function LyTableC(props: iTableRecv) {
+    let c = props.c as any;
+    let d = props.d as any;
+
+    return (
+        <Table
+            rowSelection={{ type: 'checkbox' }}
+            columns={c}
+            dataSource={d}
+        />
+    )
 }

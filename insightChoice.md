@@ -2,7 +2,7 @@
  * @Author: zendu 
  * @Date: 2022-06-22 18:46:24 
  * @Last Modified by: zendu
- * @Last Modified time: 2022-06-29 09:58:05
+ * @Last Modified time: 2022-06-29 14:43:07
  */
 
 
@@ -26,6 +26,15 @@ Todo
 
 4. 多张Table的数据可视化
 
+
+
+
+上传文件 -> 获取数据 -> 处理数据 -> 渲染数据 —> 删除数据
+App.
+  onChange={uploadSheets} 
+            -> tabs  添加新的标签页
+            -> table 将获取到的数据渲染到列表
+  
 
 
 

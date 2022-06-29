@@ -46,7 +46,7 @@ const items = [
     }
 ];
 
-const App = () => {
+const Sidebar = () => {
   const [collapsed, setCollapsed] = useState(true);
 
   const toggleCollapsed = () => {
@@ -76,4 +76,4 @@ const App = () => {
   );
 };
 
-export default App;
+export default Sidebar;

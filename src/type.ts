@@ -258,3 +258,12 @@ export interface iFile {
     size: number; // 311221
     type: string; // application/vnd.openxmlformats-officedocument.spreadsheetml.sheet
 }
+
+export interface iTabRecv {
+    uploadSheetsCB: Function;
+}
+
+export interface iTableRecv {
+    c: any | unknown;
+    d: any | unknown;
+}
