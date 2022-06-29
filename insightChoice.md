@@ -2,7 +2,7 @@
  * @Author: zendu 
  * @Date: 2022-06-22 18:46:24 
  * @Last Modified by: zendu
- * @Last Modified time: 2022-06-25 18:17:08
+ * @Last Modified time: 2022-06-29 09:58:05
  */
 
 
@@ -135,4 +135,12 @@ explain about xlsx 1  https://www.cnblogs.com/liuxianan/p/js-excel.html
 React Data Table Component  https://react-data-table-component.netlify.app/?path=/docs/api-props--page
 
 
+
+
+
+# Timeline
+
+2022年06月29日
+tool.js -> format input xlsx to json
+        -> format json to table data type
 
