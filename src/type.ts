@@ -267,3 +267,10 @@ export interface iTableRecv {
     c: any | unknown;
     d: any | unknown;
 }
+
+
+export interface iTabPlane {
+    title: string;
+    content: string;
+    key: number;
+}

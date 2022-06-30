@@ -13,7 +13,9 @@ function App() {
         <div className="top">
           <LyTabs ></LyTabs>
         </div>
-        <div className="bottom"></div>
+        <div className="bottom">
+          {/* Echarts */}
+        </div>
       </div>
     </div>
   );
