@@ -29,7 +29,7 @@ const getContentTable = (column, data, rowSelection) => {
   )
 }
 
-const LyTabs = () => {
+const LyTabs = (props: any) => {
   const [activeKey, setActiveKey] = useState(Panes[0].key);
   const [panes, setPanes] = useState(Panes);
   const newTabIndex = useRef(0);
@@ -54,11 +54,12 @@ const LyTabs = () => {
 
   // Tab改变的时候，设置active的下标
   const onChange = (key) => {
+    props.getActiveTabKey(key);
     setActiveKey(key);
   };
 
   useEffect(() => {
-    console.log('useEffect: ',panes);
+    console.log('useEffect: ', panes);
   }, [activeKey])
 
   // 点击新增tab，选中文件并上传
@@ -73,6 +74,10 @@ const LyTabs = () => {
       c: cx,
       d: dx,
     };
+
+    // 将数据传给App组件
+    props.setTablesData('add', fileName, cx, dx);
+
     setPanes([...panes, newTab]);
     setActiveKey(newActiveKey);
   };
@@ -85,6 +90,7 @@ const LyTabs = () => {
       setActiveKey(key);
     }
     setPanes(newPanes);
+    props.setTablesData('remove', targetKey);
   }
 
   const onEdit = (targetKey, action) => {
