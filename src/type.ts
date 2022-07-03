@@ -270,7 +270,7 @@ export interface iTableRecv {
 
 
 export interface iTabPlane {
-    title: string;
-    content: string;
-    key: number;
+    title: string; // '招商银行Data.xlsx'
+    content: string;  // text => <span>{text}</span>
+    key: string; // '招商银行Data.xlsx'
 }

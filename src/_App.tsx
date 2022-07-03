@@ -21,14 +21,12 @@
 //     let files = e.target.files as iFile[];
 //     let tablesArr = [];
 //     for (let file of files) {
-//       console.log(file);
 //       let jsonData = await getFirstJsonFromSheet(file);
 //       tablesArr.push({
 //         name: file.name.replace(Ext,''),
 //         data: jsonData
 //       });
 //     }
-//     console.log(tablesArr);
 //     // let [r, c] = generateColoumAndRow(jsonData);
 //     // setRows(r);
 //     // setColumns(c);
@@ -78,7 +76,6 @@
 //           }}
 //           selectableRows
 //           onSelectedRowsChange={(evt: any) => {
-//             console.log(evt);
 //           }}
 //         />
 //       </div>

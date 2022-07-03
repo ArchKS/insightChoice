@@ -2,7 +2,7 @@ import * as XLSX from "xlsx";
 import { iFile } from "../type";
 
 // 把xlsx文件解析成json格式的数据
-export function getFirstJsonFromSheet(file: any) { // json.js
+export function getFirstJsonFromSheet(file) { // json.js
     return new Promise((resolve, reject) => {
         let reader = new FileReader();
         reader.readAsBinaryString(file);
@@ -12,39 +12,17 @@ export function getFirstJsonFromSheet(file: any) { // json.js
             for (let sheetName in xlsxData.Sheets) {
                 let singleWorkSheet = xlsxData.Sheets[sheetName];
                 let json = XLSX.utils.sheet_to_json(singleWorkSheet, { defval: "" });
-                // 这里是只读取一张表 
                 resolve(json);
-                return;
+                return; // 这里是只读取一张表 
             }
         };
     });
 }
 
 // 从json数据中获取antd table格式的column
-function generateColumns(singleTableJson: any) {
-    /* 
-        {
-            "报告日期": "",
-            "2009年年报": "查看",
-            "2011年年报": "查看",
-            "2012年年报": "查看",
-        },
-    ===> 
-    {
-        title: 报告日期
-        dataIndex: 报告日期
-        render: text=> <p> {text} <p>
-    },{
-        title: 2009
-        dataIndex: 2009
-        render: text=> <p> {text} <p>
-    },
-    
+function getColumnsFromJson(singleTableJson) {
     // 1. 取出obj里的key
     // 2. 将每一个key生成单独的newObj并push到数组里
-    
-    */
-
     let columns = [],
         tableFirstLine = singleTableJson[0];
     for (let key in tableFirstLine) {
@@ -52,7 +30,7 @@ function generateColumns(singleTableJson: any) {
             columns.push({
                 title: key.replace(/[^0-9]+/, ''),
                 dataIndex: key,
-                render: text => <span>{text} </span> // 这里是body值的处理，不是column
+                render: (text) => <span>{text}</span>
             });
         } else {
             columns.unshift({
@@ -61,7 +39,6 @@ function generateColumns(singleTableJson: any) {
                 dataIndex: key, 
                 fixed: 'left',
                 render: text => <span>{text} </span>
-                // 这里是body值的处理，不是column
             });
         }
     }
@@ -69,38 +46,8 @@ function generateColumns(singleTableJson: any) {
 }
 
 // 从json数据中获取antd table格式的data
-function generateData(singleTableJson: any) {
+function getDataFromJson(singleTableJson) {
     /* 
-    {
-        "报告日期": "拆借、存放等同业业务",
-        "2009年年报": 23.07,
-        "2011年年报": "",
-        "2012年年报": "",
-        "2013年年报": "",
-        "2014年年报": "",
-        "2015年年报": "",
-        "2016年年报": "",
-        "2017年年报": "",
-        "2018年年报": "",
-        "2019年年报": "",
-        "2020年年报": ""
-    },
-
-    ===> 
-    {
-        key: '1',
-        姓名: 'John Brown',
-        age: 32,
-        address: 'New York No. 1 Lake Park',
-    },
-    {
-        key: '2',
-        name: 'Jim Green',
-        age: 42,
-        address: 'London No. 1 Lake Park',
-    },
-
-
     // 1. 取出报告中的key value
     // 2. 创建新数组
     // 3. 创建新对象
@@ -113,9 +60,7 @@ function generateData(singleTableJson: any) {
     for (let index in tableBody) {
         let val = tableBody[index];
 
-        let newObj = Object.assign({
-            key: Number(index) + 1
-        }, val);
+        let newObj = Object.assign({key: Number(index) + 1}, val);
 
         data.push(newObj);
     }
@@ -123,12 +68,89 @@ function generateData(singleTableJson: any) {
 }
 
 // 将antd格式的column和data合并，返回数组为 [columns,datas]
-export function getColAndDataFromJson(json: any) {
+export function getColAndDataFromJson(json) {
     return [
-        generateColumns(json),
-        generateData(json)
+        getColumnsFromJson(json),
+        getDataFromJson(json)
     ]
 }
+
+// params: column 
+// return: [1999,2000,2001,2002,2003,2004,2005,2006,2007,2008]
+export function getXaisxDataFromColumns(columns){
+    return columns.map(obj => {
+        let title = obj.title;
+        if(/^\d+$/.test(title)){
+            return title;
+        }else{
+            return '';
+        }
+    }).filter(t=>t!=='')
+}
+
+
+// params: 单行的数据、x轴的下标
+// 
+export function getSeriesDataFromDataSource(singleData,xAxis){
+    let title = singleData.__EMPTY,
+        data = [];
+    for(let key in singleData){
+        if(key ==="__EMPTY"){
+            title = singleData[key];
+        }
+    }
+
+    for(let item of xAxis){    
+        let val = singleData[`${item}年年报`]; 
+        data.push(val);
+    }
+    return [title,data];
+}
+
+
+
+export let defaultOptions =  { 
+    // 需要一个默认的option，且series中需要有一个item，不然reactEcharts不会更新 
+    // :https://github.com/apache/echarts/issues/7896 
+    xAxis: {
+        type: 'category',
+        data: []
+    },
+    yAxis: {
+        type: 'value'
+    },
+    series: [{
+        type: "line",
+        data: []
+    }],
+    tooltip: {
+        trigger: "axis",
+    },
+    toolbox:{
+        right: "8%",
+        feature:{
+            saveAsImage: {},
+            magicType: {
+                show: true,
+                type: ["line","bar"]
+            }
+        }
+    },
+    // grid: { top: 20, right: 20, bottom: 20, left: 20 },
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -1770,5 +1792,5 @@ let data =[
     }
 ]
 
-export const columns = generateColumns(data);
-export const datas = generateData(data);
+export const columns = getColumnsFromJson(data);
+export const datas = getDataFromJson(data);

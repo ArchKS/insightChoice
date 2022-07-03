@@ -52,7 +52,6 @@ export default function CxsTab() {
   };
 
   const onEdit = (targetKey, action ) => {
-    console.log(targetKey, action);
     if (action === 'add') {
       add();
     } else {

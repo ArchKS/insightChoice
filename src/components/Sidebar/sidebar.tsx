@@ -58,7 +58,6 @@ const Sidebar = () => {
     if(Number(key) === 1){
         toggleCollapsed();
     }
-    console.log(obj);
   }
 
   return (

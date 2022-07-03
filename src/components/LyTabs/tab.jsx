@@ -2,85 +2,48 @@ import './tab.less'
 import React from 'react';
 import { iTabPlane, iTabRecv } from '../../type'
 import { useRef, useState, useEffect } from 'react';
-import { datas, columns } from '../../utils/sheetTool'
 import { Divider, Radio, Table, Tabs } from 'antd';
-import { getColAndDataFromJson, getFirstJsonFromSheet } from '../../utils/sheetTool'
+import { getColAndDataFromJson, getFirstJsonFromSheet } from '../../utils/dataTypeConvert';
 const { TabPane } = Tabs;
-
+import { addTable, removeTable, changeTable } from '../../store/features/setTables';
+import { useSelector, useDispatch } from 'react-redux';
+import { Button, message, Space } from 'antd';
+import { sleep } from "../../utils/utils"
 let Panes: iTabPlane = [
   {
-    key: '1',
-    title: `招商银行Data`,
+    key: '招商银行Data.xlsx',
+    title: `招商银行Data.xlsx`,
   }
 ]
 
-// 根据table的column和data，生成tab标签页的内容
-const getContentTable = (column, data, rowSelection) => {
-  return (
-    <Table
-      rowSelection={{ type: 'checkbox' }}
-      columns={column}
-      dataSource={data}
-      scroll={{ x: 'max-content', y: 400 }}
-      pagination={false}
-      className="antd_table"
-      rowSelection={rowSelection ? rowSelection : {}}
-    />
-  )
-}
 
-const LyTabs = (props: any) => {
-  const [activeKey, setActiveKey] = useState(Panes[0].key);
-  const [panes, setPanes] = useState(Panes);
+
+const LyTabsComponent = (props: any) => {
+  const [activeKey, setActiveKey] = useState(null);
+  const [panes, setPanes] = useState([]);
   const newTabIndex = useRef(0);
+  const newActiveKey = useRef(null);
   const inputEl = useRef(null);
-
-  // 选中单行
-  const [selectedRowKeys, setSelectedRowKeys] = useState([]);
-  const onSelectChange = (newSelectedRowKeys) => {
-    console.log('selectedRowKeys changed: ', newSelectedRowKeys, activeKey);
-    setSelectedRowKeys(newSelectedRowKeys);
-  };
-
-  const rowSelection = {
-    selectedRowKeys,
-    onChange: onSelectChange,
-  };
-
-  Panes[0].content = getContentTable(columns, datas, rowSelection)
-  Panes[0].c = columns;
-  Panes[0].d = datas;
-  console.log(Panes);
-
+  const dispatch = useDispatch();
+  const { AppTables } = useSelector((store) => store.setTable);
+  let _staticPanes = [];
+  
   // Tab改变的时候，设置active的下标
   const onChange = (key) => {
-    props.getActiveTabKey(key);
+    dispatch(changeTable(key));
     setActiveKey(key);
   };
 
-  useEffect(() => {
-    console.log('useEffect: ', panes);
-  }, [activeKey])
-
-  // 点击新增tab，选中文件并上传
-  const add = (fileName: string, cx: any, dx: any) => {
-    // 1. 新增一个pane的obj对象
-    // 2. active key 设置为新增的key
-    const newActiveKey = `${fileName}`;
-    const newTab = {
-      key: newActiveKey,
-      title: fileName,
-      content: getContentTable(cx, dx, rowSelection),
-      c: cx,
-      d: dx,
-    };
-
-    // 将数据传给App组件
-    props.setTablesData('add', fileName, cx, dx);
-
-    setPanes([...panes, newTab]);
+  // 点击新增tab
+  const addPanes = (fileName: string, cx: any, dx: any) => {
+    _staticPanes = [...panes, { key: fileName, title: fileName }];
+    setPanes(_staticPanes); // 拿不到最新的panes 
     setActiveKey(newActiveKey);
   };
+
+  useEffect(() => {
+    _staticPanes = panes;
+  }, [panes])
 
   const remove = (targetKey) => {
     const targetIndex = panes.findIndex((pane) => pane.key === targetKey);
@@ -90,28 +53,43 @@ const LyTabs = (props: any) => {
       setActiveKey(key);
     }
     setPanes(newPanes);
-    props.setTablesData('remove', targetKey);
   }
 
   const onEdit = (targetKey, action) => {
     if (action === 'add') {
-      inputEl.current.click();
+      inputEl.current.click(); // => uploadSheet
     } else {
       remove(targetKey);
+      dispatch(removeTable(targetKey)); // 利润表_600036.xls
     }
   };
 
   // 从input文件中获取数据并解析，传到tab控件中
   const uploadSheet = (e) => {
     let files = inputEl.current.files;
-    Object.keys(files).forEach(async (v, i) => {
-      let file = files[v];
-      let fileName = file.name;
-      let json = await getFirstJsonFromSheet(file);
-      let [c, d] = getColAndDataFromJson(json);
-      add(fileName, c, d);
-    });
-
+    let keys = Object.keys(files);
+    (async (keys) => {
+      for (let i = 0; i < keys.length; i++) {
+        let key = keys[i];
+        let file = files[key];
+        let fileName = file.name;
+        // 去重
+        let isuniq = AppTables.every(table => table.fileName !== fileName);
+        if (isuniq) {
+          let json = await getFirstJsonFromSheet(file);
+          let [c, d] = getColAndDataFromJson(json);
+          addPanes(fileName, c, d); // 添加到TabPanes 
+          dispatch(addTable({       // 添加到AppTables
+            fileName: fileName,
+            columns: c,
+            dataSource: d,
+          }));
+        }else{
+          message.warning(`${fileName} has exists`);
+        }
+      }
+    }
+    )(keys);
   }
 
 
@@ -124,19 +102,10 @@ const LyTabs = (props: any) => {
           type="editable-card"
           onEdit={onEdit}>
           {panes.map((pane) => (
-            <TabPane tab={pane.title} key={pane.key}>
-              {pane.content}
-            </TabPane>
+            <TabPane tab={pane.title} key={pane.key}></TabPane>
           ))}
         </Tabs>
       </div>
-      <div className="settings">
-        <div className="graph">
-
-        </div>
-      </div>
-
-
       <div className="input_wrapper">
         <input type="file" name="sheets" id="sheets" multiple ref={inputEl} onChange={uploadSheet} />
       </div>
@@ -144,4 +113,4 @@ const LyTabs = (props: any) => {
   );
 };
 
-export default LyTabs;
+export default LyTabsComponent;
