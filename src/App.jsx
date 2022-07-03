@@ -49,6 +49,7 @@ function App() {
             |
             <Button type="primary" onClick={drawMultiTable}>资产堆积图</Button>
             <Button type="primary" onClick={drawMultiTable}>现金流量图</Button>
+            <Button type="primary" onClick={drawMultiTable}>费用构成</Button>
 
           </div>
         </div>
