@@ -132,9 +132,13 @@ export let defaultOptions =  {
             saveAsImage: {},
             magicType: {
                 show: true,
-                type: ["line","bar"]
+                type: ["line","bar","pie"]
             }
         }
+    },
+    legend: {
+        orient: 'vertical',
+        left: 'center'
     },
     // grid: { top: 20, right: 20, bottom: 20, left: 20 },
 }

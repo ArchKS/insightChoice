@@ -5,7 +5,7 @@ import LyTableComponent from './components/LyTable/LyTable';
 import { datas, columns, defaultOptions } from './utils/dataTypeConvert'
 import { useSelector, useDispatch } from 'react-redux';
 import ReactECharts from "echarts-for-react";
-import { Button, message, Space } from 'antd';
+import { Button, message, Space, Divider } from 'antd';
 import { setIndex } from './store/features/setRowIndex'
 import { resetOption, clearOption } from './store/features/setOption'
 
@@ -42,15 +42,17 @@ function App() {
             <LyTableComponent></LyTableComponent>
           </div>
           <div className="settings">
-            <Button type="primary" onClick={clearOptions}>重置图标</Button>
-            <Button type="primary" onClick={drawMultiSelect}>同表多绘</Button>
-            <Button type="primary" onClick={drawMultiTable}>异表同绘</Button>
-            |
-            |
-            <Button type="primary" onClick={drawMultiTable}>资产堆积图</Button>
-            <Button type="primary" onClick={drawMultiTable}>现金流量图</Button>
-            <Button type="primary" onClick={drawMultiTable}>费用构成</Button>
 
+
+            <Button type="primary" className="draw_button" onClick={clearOptions}>重置图表</Button>
+            <Button type="primary" className="draw_button"  onClick={drawMultiSelect}>同表多项</Button>
+            <Button type="primary" className="draw_button"  onClick={drawMultiTable}>异表同项</Button>
+            <span className="draw_button">&nbsp;| &nbsp;</span>
+            <Button type="primary" className="draw_button"  onClick={drawMultiTable}>饼图</Button>
+            <span className="draw_button">&nbsp;| &nbsp;</span>
+            <Button type="primary" className="draw_button"  onClick={drawMultiTable}>资产堆积图</Button>
+            <Button type="primary" className="draw_button"  onClick={drawMultiTable}>现金流量图</Button>
+            <Button type="primary" className="draw_button"  onClick={drawMultiTable}>费用构成</Button>
           </div>
         </div>
         <div className="bottom">
@@ -60,7 +62,7 @@ function App() {
             theme={"vintage"}
             noMerge={true}
             lazyUpdate={false}
-            style={{ height: "700px" }}
+            style={{ height: "500px" }}
           ></ReactECharts>
         </div>
       </div>
