@@ -1,14 +1,14 @@
-import './tab.less'
-import React from 'react';
-import { iTabPlane, iTabRecv } from '../../type'
-import { useRef, useState, useEffect } from 'react';
-import { Divider, Radio, Table, Tabs } from 'antd';
-import { getColAndDataFromJson, getFirstJsonFromSheet } from '../../utils/dataTypeConvert';
-const { TabPane } = Tabs;
-import { addTable, removeTable, changeTable } from '../../store/features/setTables';
 import { useSelector, useDispatch } from 'react-redux';
-import { Button, message, Space } from 'antd';
-import { sleep } from "../../utils/utils"
+import React, { useRef, useState, useEffect } from 'react';
+import { Divider, Radio, Table, Tabs, Button, message, Space } from 'antd';
+const { TabPane } = Tabs;
+
+import { getColAndDataFromJson, getFirstJsonFromSheet } from '../utils/dataTypeConvert';
+import { sleep } from "../utils/utils"
+import { iTabPlane, iTabRecv } from '../type'
+import { addTable, removeTable, changeTable } from '../store/features/setTables';
+import { setIndex } from '../store/features/setRowIndex';
+
 let Panes: iTabPlane = [
   {
     key: '招商银行Data.xlsx',
@@ -27,10 +27,11 @@ const LyTabsComponent = (props: any) => {
   const dispatch = useDispatch();
   const { AppTables } = useSelector((store) => store.setTable);
   let _staticPanes = [];
-  
+
   // Tab改变的时候，设置active的下标
   const onChange = (key) => {
     dispatch(changeTable(key));
+    dispatch(setIndex([]));
     setActiveKey(key);
   };
 
@@ -84,7 +85,7 @@ const LyTabsComponent = (props: any) => {
             columns: c,
             dataSource: d,
           }));
-        }else{
+        } else {
           message.warning(`${fileName} has exists`);
         }
       }

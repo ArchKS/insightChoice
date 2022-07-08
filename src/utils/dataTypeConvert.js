@@ -1,6 +1,7 @@
-import * as XLSX from "xlsx";
-import { iFile } from "../type";
 
+import * as XLSX from "xlsx";
+
+const HEADERKEY = "__EMPTY";
 // 把xlsx文件解析成json格式的数据
 export function getFirstJsonFromSheet(file) { // json.js
     return new Promise((resolve, reject) => {
@@ -76,7 +77,8 @@ export function getColAndDataFromJson(json) {
 }
 
 // params: column 
-// return: [1999,2000,2001,2002,2003,2004,2005,2006,2007,2008]
+// return: xAxis [1999,2000,2001,2002,2003,2004,2005,2006,2007,2008]
+// ::::: 缺少排序
 export function getXaisxDataFromColumns(columns){
     return columns.map(obj => {
         let title = obj.title;
@@ -90,12 +92,12 @@ export function getXaisxDataFromColumns(columns){
 
 
 // params: 单行的数据、x轴的下标
-// 
+// ::::: 缺少排序
 export function getSeriesDataFromDataSource(singleData,xAxis){
     let title = singleData.__EMPTY,
         data = [];
     for(let key in singleData){
-        if(key ==="__EMPTY"){
+        if(key === HEADERKEY ){
             title = singleData[key];
         }
     }
@@ -109,19 +111,21 @@ export function getSeriesDataFromDataSource(singleData,xAxis){
 
 
 
-export let defaultOptions =  { 
+export function retDefaultOptions(){
+    return { 
     // 需要一个默认的option，且series中需要有一个item，不然reactEcharts不会更新 
     // :https://github.com/apache/echarts/issues/7896 
     xAxis: {
         type: 'category',
-        data: []
+        data: [1,2,3,4]
     },
     yAxis: {
         type: 'value'
     },
     series: [{
         type: "line",
-        data: []
+        data: [0,0,0,0],
+        title: 'null'
     }],
     tooltip: {
         trigger: "axis",
@@ -132,26 +136,39 @@ export let defaultOptions =  {
             saveAsImage: {},
             magicType: {
                 show: true,
-                type: ["line","bar","pie"]
+                type: ["line","bar"]
             }
         }
     },
     legend: {
-        orient: 'vertical',
         left: 'center'
     },
-    // grid: { top: 20, right: 20, bottom: 20, left: 20 },
 }
+} 
 
 
 
 
 
-
-
-
-
-
+export function generateSeriesItem(data,title){
+    return {
+        data: data,
+        type: 'line',
+        name: title,
+        smooth: true,
+        // markPoint: {
+        //     data: [
+        //         { type: 'max' },
+        //         { type: 'min' },
+        //     ]
+        // },
+        // markLine: {
+        //     data: [
+        //         { type: 'average' }
+        //     ]
+        // }
+    }
+}
 
 
 

@@ -15,7 +15,6 @@
 //     }
 // }
 
-import './sidebar.less'
 import React from "react";
 import {
   AreaChartOutlined,

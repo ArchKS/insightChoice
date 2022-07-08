@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import 'antd/dist/antd.less'; 
-import './style.less'
+import './styles/style.less'
 import App from './App';
 import store from './store';
 import { Provider } from 'react-redux';

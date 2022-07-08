@@ -1,0 +1,65 @@
+* {
+  margin: 0;
+  padding: 0;
+}
+
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+
+.App {
+  display: flex;
+
+  .left_wrapper {}
+
+  .right_wrapper {
+    width: 101%;
+    overflow-x: hidden;
+
+    .top {
+      .draw_button{
+        margin-right: 10px;
+      }
+    }
+
+    .bottom {
+      margin: 40px 20px 0 30px;
+    }
+
+  }
+}
+
+
+#sheets{
+  display: none;
+  position: absolute;
+  margin-right: -1000px;
+  margin-top: -1000px;
+}
+.ant-table-content{
+  overflow: inherit !important;
+}
+
+.ant-table-thead > tr > th, .ant-table-tbody > tr > td, .ant-table tfoot > tr > th, .ant-table tfoot > tr > td {
+  padding: 5px 16px !important;
+}
+
+.ant-tabs-top > .ant-tabs-nav, .ant-tabs-bottom > .ant-tabs-nav, .ant-tabs-top > div > .ant-tabs-nav, .ant-tabs-bottom > div > .ant-tabs-nav {
+  margin-bottom: 0 !important;
+}
+
+.sidebar {
+  width: auto;
+  height: 100vh;
+  max-width: 140px;
+}
+.menubar {
+  height: 100%;
+}
+.icon_bottom {
+
+}
