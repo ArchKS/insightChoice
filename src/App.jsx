@@ -1,14 +1,20 @@
-import React, { useRef } from "react";
+import React, { useEffect, useRef } from "react";
 import Sidebar from './components/Sidebar';
 import LyTabsComponent from './components/LyTabs';
 import LyTableComponent from './components/LyTable';
 import { retDefaultOptions, getSeriesDataFromDataSource, getXaisxDataFromColumns, generateSeriesItem } from './utils/dataTypeConvert'
+// eslint-disable-next-line
+import { ThemeJson } from './utils/echartRel'
 import { useSelector, useDispatch } from 'react-redux';
 import ReactECharts from "echarts-for-react";
 import { Button, message, Tooltip } from 'antd';
 import { setIndex } from './store/features/setRowIndex'
 import { resetOption } from './store/features/setOption'
 import { ClearOutlined  } from '@ant-design/icons';
+// eslint-disable-next-line
+import * as echarts from 'echarts'
+
+// echarts.registerTheme('vte',ThemeJson)
 
 const ITEMSUFFIX = "(亿元)"
 
@@ -25,6 +31,11 @@ function App() {
     dispatch(resetOption({}));
     dispatch(setIndex([]));
   }
+
+  useEffect(()=>{
+    // setTheme();
+    console.log(echartsRef.current.getEchartsInstance());
+  },[])
 
   const clearOptions = () => {
     reset();
@@ -66,7 +77,7 @@ function App() {
   }
 
   // 不同的表，绘制同一张选项
-  const drawMultiTable = () => { }
+  // const drawMultiTable = () => { }
 
   const test = () => { }
 
@@ -270,7 +281,7 @@ function App() {
           <ReactECharts
             ref={echartsRef}
             option={option}
-            theme={"vintage"}
+            theme={"vte"}
             notMerge={true}
             lazyUpdate={true}
             style={{ height: "500px" }}

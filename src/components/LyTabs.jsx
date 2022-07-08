@@ -1,30 +1,23 @@
 import { useSelector, useDispatch } from 'react-redux';
 import React, { useRef, useState, useEffect } from 'react';
-import { Divider, Radio, Table, Tabs, Button, message, Space } from 'antd';
+import { Tabs, message } from 'antd';
 import { getColAndDataFromJson, getFirstJsonFromSheet } from '../utils/dataTypeConvert';
-import { sleep } from "../utils/utils"
-import { iTabPlane, iTabRecv } from '../type'
 import { addTable, removeTable, changeTable } from '../store/features/setTables';
 import { setIndex } from '../store/features/setRowIndex';
+
+
 const { TabPane } = Tabs;
-
-let Panes: iTabPlane = [
-  {
-    key: '招商银行Data.xlsx',
-    title: `招商银行Data.xlsx`,
-  }
-]
-
 
 
 const LyTabsComponent = (props: any) => {
   const [activeKey, setActiveKey] = useState(null);
   const [panes, setPanes] = useState([]);
-  const newTabIndex = useRef(0);
+  // const newTabIndex = useRef(0);
   const newActiveKey = useRef(null);
   const inputEl = useRef(null);
   const dispatch = useDispatch();
   const { AppTables } = useSelector((store) => store.setTable);
+  // eslint-disable-next-line
   let _staticPanes = [];
 
   // Tab改变的时候，设置active的下标
@@ -42,6 +35,7 @@ const LyTabsComponent = (props: any) => {
   };
 
   useEffect(() => {
+    // eslint-disable-next-line
     _staticPanes = panes;
   }, [panes])
 
@@ -91,7 +85,6 @@ const LyTabsComponent = (props: any) => {
     }
     )(keys);
   }
-
 
   return (
     <div className='tab_wrapper'>
