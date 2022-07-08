@@ -244,11 +244,11 @@ function App() {
             <Button type="primary" className="draw_button" onClick={clearOptions}>重置图表</Button>
             <Button type="primary" className="draw_button" onClick={drawMultiSelect}>同表绘制</Button>
             <Button type="primary" className="draw_button" onClick={stackMultiSelect}>同表堆积</Button>
-            <Button type="primary" className="draw_button" onClick={test}>异表绘制</Button>
+            <Button type="disabled" className="draw_button" onClick={test}>异表绘制</Button>
 
             <span className="draw_button">&nbsp;| &nbsp;</span>
 
-            <Button type="primary" className="draw_button" onClick={test}>饼图</Button>
+            <Button type="disabled" className="draw_button" onClick={test}>饼图</Button>
 
             <span className="draw_button">&nbsp;| &nbsp;</span>
 
