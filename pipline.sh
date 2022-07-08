@@ -11,6 +11,7 @@ git push
 
 npm run build
 cp -r ./build/* ../githubpages/
+cp -r ./assets/* ../githubpages/
 cd ../githubpages/
 
 git add . 
