@@ -1,9 +1,7 @@
-import React,{ useState } from 'react'
+import React from 'react'
 import { Table } from 'antd';
 import { useSelector, useDispatch } from 'react-redux';
-import { getXaisxDataFromColumns, getSeriesDataFromDataSource, retDefaultOptions,generateSeriesItem } from '../utils/dataTypeConvert'
 import { setIndex } from '../store/features/setRowIndex';
-import { resetOption, clearOption } from '../store/features/setOption'
 
 const TableHeight = 500;
 
