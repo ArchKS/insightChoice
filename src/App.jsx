@@ -8,6 +8,7 @@ import ReactECharts from "echarts-for-react";
 import { Button, message, Tooltip } from 'antd';
 import { setIndex } from './store/features/setRowIndex'
 import { resetOption } from './store/features/setOption'
+import { ClearOutlined  } from '@ant-design/icons';
 
 const ITEMSUFFIX = "(亿元)"
 
@@ -241,7 +242,7 @@ function App() {
           <div className="settings">
 
 
-            <Button type="primary" className="draw_button" onClick={clearOptions}>重置图表</Button>
+            <Button type="primary" icon={<ClearOutlined />} className="draw_button" onClick={clearOptions}>重置图表</Button>
             <Button type="primary" className="draw_button" onClick={drawMultiSelect}>同表绘制</Button>
             <Button type="primary" className="draw_button" onClick={stackMultiSelect}>同表堆积</Button>
             <Button type="disabled" className="draw_button" onClick={test}>异表绘制</Button>
