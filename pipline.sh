@@ -8,3 +8,11 @@ fi
 git add .
 git commit -m "$msg"
 git push
+
+npm run build
+cp -r ./build/* ../githubpages/
+cd ../githubpages/
+
+git add . 
+git commit -m "$msg"
+git push

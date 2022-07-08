@@ -1,13 +1,12 @@
 import { useSelector, useDispatch } from 'react-redux';
 import React, { useRef, useState, useEffect } from 'react';
 import { Divider, Radio, Table, Tabs, Button, message, Space } from 'antd';
-const { TabPane } = Tabs;
-
 import { getColAndDataFromJson, getFirstJsonFromSheet } from '../utils/dataTypeConvert';
 import { sleep } from "../utils/utils"
 import { iTabPlane, iTabRecv } from '../type'
 import { addTable, removeTable, changeTable } from '../store/features/setTables';
 import { setIndex } from '../store/features/setRowIndex';
+const { TabPane } = Tabs;
 
 let Panes: iTabPlane = [
   {
