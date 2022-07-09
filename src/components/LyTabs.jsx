@@ -1,24 +1,26 @@
 // @ts-nocheck
 import { useSelector, useDispatch } from 'react-redux';
-import React, { useRef, useState, useEffect } from 'react';
+import * as React from 'react';
 import { Tabs, message } from 'antd';
 import { getColAndDataFromJson, getFirstJsonFromSheet } from '../utils/dataConvert';
 import { addTable, removeTable, changeTable } from '../store/features/setTables';
 import { setIndex } from '../store/features/setRowIndex';
+// import { doSetPane } from '../store/features/setPane';
 
 const { TabPane } = Tabs;
 
 
 const LyTabsComponent = () => {
-  const [activeKey, setActiveKey] = useState(null);
-  const [panes, setPanes] = useState([]);
-  // const newTabIndex = useRef(0);
-  const newActiveKey = useRef(null);
-  const inputEl = useRef(null);
   const dispatch = useDispatch();
+
+  const [activeKey, setActiveKey] = React.useState(null);
+  const [panes,setPanes] = React.useState([]);
+
+  const newActiveKey = React.useRef(null);
+  const inputEl = React.useRef(null);
+
   const { AppTables } = useSelector((store) => store.setTable);
-  // eslint-disable-next-line
-  let _staticPanes = [];
+  // const { panes } = useSelector((store) => store.setPane);
 
   // Tab改变的时候，设置active的下标
   const onChange = (key) => {
@@ -28,16 +30,12 @@ const LyTabsComponent = () => {
   };
 
   // 点击新增tab
-  const addPanes = (fileName, cx, dx) => {
-    _staticPanes = [...panes, { key: fileName, title: fileName }];
-    setPanes(_staticPanes); // 拿不到最新的panes 
+  const addPanes = (fileName) => {
+    const newPanes = [...panes, { key: fileName, title: fileName }];
+    // dispatch(doSetPane());
+    setPanes(newPanes);
     setActiveKey(newActiveKey);
   };
-
-  useEffect(() => {
-    // eslint-disable-next-line
-    _staticPanes = panes;
-  }, [panes])
 
   const remove = (targetKey) => {
     const targetIndex = panes.findIndex((pane) => pane.key === targetKey);
@@ -46,7 +44,8 @@ const LyTabsComponent = () => {
       const { key } = newPanes[targetIndex === newPanes.length ? targetIndex - 1 : targetIndex];
       setActiveKey(key);
     }
-    setPanes(newPanes);
+    // dispatch(doSetPane(newPanes));
+    setPanes(newPanes)
   }
 
   const onEdit = (targetKey, action) => {
@@ -54,36 +53,32 @@ const LyTabsComponent = () => {
       inputEl.current.click(); // => uploadSheet
     } else {
       remove(targetKey);
-      dispatch(removeTable(targetKey)); // 
+      dispatch(removeTable(targetKey));
     }
   };
 
   // 从input文件中获取数据并解析，传到tab控件中
-  const uploadSheet = (e) => {
+  const uploadSheet = async (e) => {
     let files = inputEl.current.files;
     let keys = Object.keys(files);
-    (async (keys) => {
-      for (let i = 0; i < keys.length; i++) {
-        let key = keys[i];
-        let file = files[key];
-        let fileName = file.name;
-        // 去重
-        let isuniq = AppTables.every((table) => table.fileName !== fileName);
-        if (isuniq) {
-          let json = await getFirstJsonFromSheet(file) ;
-          let [c, d] = getColAndDataFromJson(json);
-          addPanes(fileName, c, d); // 添加到TabPanes 
-          dispatch(addTable({       // 添加到AppTables
-            fileName: fileName,
-            columns: c,
-            dataSource: d,
-          }));
-        } else {
-          message.warning(`${fileName} has exists`);
-        }
+    let panesArr = [];
+    for (let i = 0; i < keys.length; i++) {
+      let key = keys[i];
+      let file = files[key];
+      let fileName = file.name;
+      let isuniq = AppTables.every((table) => table.fileName !== fileName);
+      if (isuniq) {
+        let json = await getFirstJsonFromSheet(file);
+        let [c, d] = getColAndDataFromJson(json);
+        panesArr.push({ key: fileName, title: fileName })
+        dispatch(addTable({ fileName: fileName, columns: c, dataSource: d }));
+        setActiveKey(newActiveKey);
+      } else {
+        message.warning(`${fileName} has exists`);
       }
     }
-    )(keys);
+
+    setPanes([...panes,...panesArr]);
   }
 
   return (

@@ -152,8 +152,7 @@ function App() {
         default: break;
       }
     }
-
-    opt.series = Object.values(multiSelectObj);
+    opt.series = Object.values(multiSelectObj).filter(v=>JSON.stringify(v) !== '{}');
     dispatch(resetOption(opt));
   }
 

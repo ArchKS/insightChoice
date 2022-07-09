@@ -242,20 +242,20 @@ export function getRowDatasByTitleObj(specObj,pointTable){
 /* 从当前表，批量获取指定名称的项，封装成echarts的option返回 */
 export function convertSpecRowToOption(pointTable,specObj,seriesType="bar",stackType="all"){
     let xAxis = getXaisxDataFromColumns(pointTable.columns);
-    console.log('xaxis:',xAxis);
     let retObj = getRowDatasByTitleObj(specObj,pointTable);
-    console.log('retObj:',retObj);
     let opt = retDefaultOptions();
     opt.series = [];
+    const seriesArr = []
     opt.xAxis.data = xAxis;
     for (let key in retObj) {
         let seriesDataObj = generateSeriesItem(retObj[key], key);
         seriesDataObj.stack = stackType;
         seriesDataObj.type = seriesType;
         seriesDataObj.areaStyle = {};
-        opt.series.push(seriesDataObj);
+        seriesArr.push(seriesDataObj);
     }
-    console.log(opt);
+    opt.series = seriesArr;
+    console.log('opt?:',opt.series);
     return opt;
 }
 
