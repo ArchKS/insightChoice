@@ -15,4 +15,4 @@ root.render(
 );
 
 
-console.log('%c【PUBLISH TIME】-> ','color:#5FD068;margin-left: 20%;padding: 20px;');
+console.log('%c【PUBLISH TIME】-> 2022-07-09 11:12:07','color:#5FD068;margin-left: 20%;padding: 20px;');
