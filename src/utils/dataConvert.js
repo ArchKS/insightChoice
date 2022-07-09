@@ -1,9 +1,9 @@
 
 import * as XLSX from "xlsx";
-import { HEADERKEY, YearDecorate } from "./Variable";
+import { HEADERKEY, YearDecorate ,columnNameSuffix} from "./Variable";
 
 // 把xlsx文件解析成json格式的数据
-export function getFirstJsonFromSheet(file: File) { // json.js
+export function getFirstJsonFromSheet(file) { // json.js
     return new Promise((resolve, reject) => {
         let reader = new FileReader();
         reader.readAsBinaryString(file);
@@ -31,7 +31,7 @@ function getColumnsFromJson(singleTableJson) {
             columns.push({
                 title: key.replace(/[^0-9]+/, ''),
                 dataIndex: key,
-                render: (text: string) => <span>{text} </span>
+                render: (text) => <span>{text} </span>
             });
         } else {
             columns.unshift({
@@ -39,7 +39,7 @@ function getColumnsFromJson(singleTableJson) {
                 ellipsis: true,
                 dataIndex: key,
                 fixed: 'left',
-                render: (text: string) => <span>{text} </span>
+                render: (text) => <span>{text} </span>
             });
         }
     }
@@ -102,7 +102,7 @@ export function getSeriesDataFromDataSource(singleRowData,xAxis) {
 
     for (let item of xAxis) { // x轴的值 item一般为 2001 2002 
         let key = `${item}${YearDecorate}`;
-        let val: string = '';
+        let val = '';
         if (singleRowData.hasOwnProperty(key)) { // 如果年份是： 2001年年报 这种格式
             val = singleRowData[key];
         } else if (singleRowData.hasOwnProperty(item)) {
@@ -195,3 +195,81 @@ let data = [
 
 export const columns = getColumnsFromJson(data);
 export const datas = getDataFromJson(data);
+
+
+// 根据列名获取当前行的数据，比如 销售成本 -> [ 23,01, 22.31, 34.09, 34.55 ]
+export function getRowDataByTitle(specName,table) {
+    let xAxis = getXaisxDataFromColumns(table.columns);
+    let dataSource = table.dataSource;
+    for(let rowData of dataSource){
+        let [title, data] = getSeriesDataFromDataSource(rowData, xAxis); // title: 财务费用(亿元)
+        let fmtTitle = title.replace(columnNameSuffix, '');
+        if(specName === title || specName === fmtTitle){
+            return data;
+        }
+    }
+    return [];
+}
+
+/* 
+    params:
+    specObj: {
+        销售成本:[],
+        财务成本:[],
+        ...
+    }
+
+    return:
+    dataObj: {
+        销售成本:[xxx],
+        财务成本:[xxx],
+        ...
+    }  
+    从当前表批量获取指定名称的项
+ */
+export function getRowDatasByTitleObj(specObj,pointTable){
+    let hasDataSelectObj = {};
+    Object.keys(specObj).forEach(key => {
+        let res = getRowDataByTitle(key, pointTable);
+        if (res && res.length > 0) {
+          hasDataSelectObj[key] = res;
+        }
+    });
+    return hasDataSelectObj;
+}
+
+
+/* 从当前表，批量获取指定名称的项，封装成echarts的option返回 */
+export function convertSpecRowToOption(pointTable,specObj,seriesType="bar",stackType="all"){
+    let xAxis = getXaisxDataFromColumns(pointTable.columns);
+    console.log('xaxis:',xAxis);
+    let retObj = getRowDatasByTitleObj(specObj,pointTable);
+    console.log('retObj:',retObj);
+    let opt = retDefaultOptions();
+    opt.series = [];
+    opt.xAxis.data = xAxis;
+    for (let key in retObj) {
+        let seriesDataObj = generateSeriesItem(retObj[key], key);
+        seriesDataObj.stack = stackType;
+        seriesDataObj.type = seriesType;
+        seriesDataObj.areaStyle = {};
+        opt.series.push(seriesDataObj);
+    }
+    console.log(opt);
+    return opt;
+}
+
+
+  // 两个series的item相加
+export function addObj  (seriesItem1, seriesItem2) {
+    if (seriesItem1.hasOwnProperty("name")) {
+        for (let index in seriesItem2.data) {
+        let v1 = seriesItem2.data[index] || 0; // 避免出现 ""+""的情况
+        let v2 = seriesItem1.data[index] || 0;
+        seriesItem1.data[index] = Number((v1 + v2).toFixed(2));
+        }
+    } else {
+        seriesItem1 = seriesItem2;
+    }
+    return seriesItem1;
+}

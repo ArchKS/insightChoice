@@ -1,5 +1,12 @@
-import { generateSeriesItem, getSeriesDataFromDataSource, getXaisxDataFromColumns, retDefaultOptions } from "./dataConvert";
-import { columnNameSuffix } from "./Variable";
+import {
+    generateSeriesItem,
+    getSeriesDataFromDataSource,
+    getXaisxDataFromColumns,
+    retDefaultOptions
+} from "./dataConvert";
+import {
+    columnNameSuffix
+} from "./Variable";
 
 
 // interface iSelectObj {
@@ -28,7 +35,7 @@ export const constructStackAndFixedKeyOpt = (pointTable, selectObj, seriesType =
     for (let key in hasDataSelectObj) {
         let seriesDataObj = generateSeriesItem(hasDataSelectObj[key], key);
         seriesDataObj.stack = 'all';
-        seriesDataObj.type = seriesType ;
+        seriesDataObj.type = seriesType;
         seriesDataObj.areaStyle = {};
         seriesArr.push(seriesDataObj);
     }
@@ -36,3 +43,5 @@ export const constructStackAndFixedKeyOpt = (pointTable, selectObj, seriesType =
     opt.series = seriesArr;
     return opt;
 }
+
+

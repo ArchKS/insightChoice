@@ -1,22 +1,23 @@
-import React, { useRef } from "react";
-import Sidebar from './components/Sidebar';
-import LyTabsComponent from './components/LyTabs';
-import LyTableComponent from './components/LyTable';
-import { retDefaultOptions, getSeriesDataFromDataSource, getXaisxDataFromColumns, generateSeriesItem } from './utils/dataConvert'
+import * as React from "react";
 import { useSelector, useDispatch } from 'react-redux';
 import ReactECharts from "echarts-for-react";
 import { Button, message, Tooltip } from 'antd';
+import { ClearOutlined } from '@ant-design/icons';
+
+import Sidebar from './components/Sidebar';
+import LyTabsComponent from './components/LyTabs';
+import LyTableComponent from './components/LyTable';
 import { setIndex } from './store/features/setRowIndex'
 import { resetOption } from './store/features/setOption'
-import { ClearOutlined } from '@ant-design/icons';
-import { TABLENAME,columnNameSuffix } from "./utils/Variable";
+import { TABLENAME, columnNameSuffix } from "./utils/Variable";
+import { retDefaultOptions, getSeriesDataFromDataSource, getXaisxDataFromColumns, generateSeriesItem,convertSpecRowToOption,addObj } from './utils/dataConvert'
 
 function App() {
   const dispatch = useDispatch();
   let { option } = useSelector(store => store.setOption);
   let { ActiveTable, AppTables } = useSelector(store => store.setTable);
   let { selectIndex } = useSelector(store => store.setRowIndex);
-  const echartsRef = useRef(null);
+  const echartsRef = React.useRef(null);
   const clearOptions = () => {
     // 暴力重置法，不这样清不干净
     echartsRef.current.getEchartsInstance().clear(); // 重置图标，和changeTab的时候需要用到重置功能
@@ -75,7 +76,7 @@ function App() {
     if (!crashFlowTable) return;
 
     // 根据当前表格和想要获取的行，获取opt
-    let opt = constructStackAndFixedKeyOpt(crashFlowTable, selectObj);
+    let opt = convertSpecRowToOption(crashFlowTable, selectObj);
     dispatch(resetOption(opt));
   }
 
@@ -91,28 +92,10 @@ function App() {
     if (!profieTable) return;
 
     // 根据当前表格和想要获取的行，获取opt
-    let opt = constructStackAndFixedKeyOpt(profieTable, selectObj);
+    let opt = convertSpecRowToOption(profieTable, selectObj);
     dispatch(resetOption(opt));
   }
 
-  const getCertainTable = (tbName) => {
-    let certainTable;
-    let reg = new RegExp(tbName);
-
-    for (let Table of AppTables) {
-      if (reg.test(Table.fileName)) {
-        certainTable = Table;
-        break;
-      }
-    }
-
-    if (!certainTable) {
-      message.error(`当前不存在${tbName}`, 3);
-      return false;
-    } else {
-      return certainTable;
-    }
-  }
 
   /* 构建资产堆积图，包括货币资金、存货、无形资产、应收类资产、固定资产 */
   const drawFundStack = () => {
@@ -140,9 +123,8 @@ function App() {
     if (!balanceSheetTable) return;
 
     // 根据当前表格和想要获取的行，获取opt
-    let opt = constructStackAndFixedKeyOpt(balanceSheetTable, selectObjExpend, 'line');
+    let opt = convertSpecRowToOption(balanceSheetTable, selectObjExpend, 'line');
     let series = opt.series;
-    console.log('series: ', series); // 无形资产 NaN
     for (let item of series) {
       let name = item.name.replace(columnNameSuffix, '').trim();
       switch (name) {
@@ -175,52 +157,27 @@ function App() {
     dispatch(resetOption(opt));
   }
 
-  const addObj = (multiObj, seriesItem) => {
 
-    if (multiObj.hasOwnProperty("name")) {
-      for (let index in seriesItem.data) {
-        let v1 = seriesItem.data[index] || 0; // 避免出现 ""+""的情况
-        let v2 = multiObj.data[index] || 0;
-        multiObj.data[index] = Number((v1 + v2).toFixed(2));
+  // 寻找AppTables中指定名称的表，模糊搜索，找到后返回Table
+  const getCertainTable = (tbName) => {
+    let certainTable;
+    let reg = new RegExp(tbName);
+
+    for (let Table of AppTables) {
+      if (reg.test(Table.fileName)) {
+        certainTable = Table;
+        break;
       }
+    }
+
+    if (!certainTable) {
+      message.error(`当前不存在${tbName}`, 3);
+      return false;
     } else {
-      multiObj = seriesItem;
+      return certainTable;
     }
-    return multiObj;
   }
 
-
-  /* 从指定表中选出指定字段，构造堆叠数据 */
-  const constructStackAndFixedKeyOpt = (pointTable, selectObj, seriesType = "bar") => {
-    // xAxis data
-    let xAxis = getXaisxDataFromColumns(pointTable.columns);
-    let hasDataSelectObj = {}; // 替代selectObj，不然会出现NAN数组
-    // 获取selectObj中key指定的数据
-    for (let row of pointTable.dataSource) {
-      let [title, data] = getSeriesDataFromDataSource(row, xAxis); // title: 财务费用(亿元)
-      let fmtTitle = title.replace(columnNameSuffix, '');
-      for (let key in selectObj) {
-        if (key === fmtTitle) {
-          hasDataSelectObj[key] = data;
-        }
-      }
-    }
-    // 构造echart option对象
-    let opt = retDefaultOptions();
-    opt.xAxis.data = xAxis;
-
-    const seriesArr = [];
-
-    for (let key in hasDataSelectObj) {
-      let seriesDataObj = generateSeriesItem(hasDataSelectObj[key], key);
-      seriesDataObj.stack = 'all';
-      seriesDataObj.type = seriesType;
-      seriesDataObj.areaStyle = {};
-      seriesArr.push(seriesDataObj);
-    }
-    opt.series = seriesArr;
-    return opt;
-  }
 
   return (
     <div className="App">
