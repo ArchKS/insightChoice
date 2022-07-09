@@ -1,15 +1,15 @@
+// @ts-nocheck
 import { useSelector, useDispatch } from 'react-redux';
 import React, { useRef, useState, useEffect } from 'react';
 import { Tabs, message } from 'antd';
-import { getColAndDataFromJson, getFirstJsonFromSheet } from '../utils/dataTypeConvert';
+import { getColAndDataFromJson, getFirstJsonFromSheet } from '../utils/dataConvert';
 import { addTable, removeTable, changeTable } from '../store/features/setTables';
 import { setIndex } from '../store/features/setRowIndex';
-
 
 const { TabPane } = Tabs;
 
 
-const LyTabsComponent = (props: any) => {
+const LyTabsComponent = () => {
   const [activeKey, setActiveKey] = useState(null);
   const [panes, setPanes] = useState([]);
   // const newTabIndex = useRef(0);
@@ -28,7 +28,7 @@ const LyTabsComponent = (props: any) => {
   };
 
   // 点击新增tab
-  const addPanes = (fileName: string, cx: any, dx: any) => {
+  const addPanes = (fileName, cx, dx) => {
     _staticPanes = [...panes, { key: fileName, title: fileName }];
     setPanes(_staticPanes); // 拿不到最新的panes 
     setActiveKey(newActiveKey);
@@ -54,7 +54,7 @@ const LyTabsComponent = (props: any) => {
       inputEl.current.click(); // => uploadSheet
     } else {
       remove(targetKey);
-      dispatch(removeTable(targetKey)); // 利润表_600036.xls
+      dispatch(removeTable(targetKey)); // 
     }
   };
 
@@ -68,9 +68,9 @@ const LyTabsComponent = (props: any) => {
         let file = files[key];
         let fileName = file.name;
         // 去重
-        let isuniq = AppTables.every(table => table.fileName !== fileName);
+        let isuniq = AppTables.every((table) => table.fileName !== fileName);
         if (isuniq) {
-          let json = await getFirstJsonFromSheet(file);
+          let json = await getFirstJsonFromSheet(file) ;
           let [c, d] = getColAndDataFromJson(json);
           addPanes(fileName, c, d); // 添加到TabPanes 
           dispatch(addTable({       // 添加到AppTables

@@ -1,20 +1,4 @@
 // @ts-nocheck
-// import React from 'react';
-
-// export default class SideBar extends React.Component {
-
-//     state = {
-//         isMenuOpen: false
-//     }
-//     render(){
-//       return  (
-//             <div>
-//                 {this.state.isMenuOpen ? <div>menu open</div> : <div>menu is not open</div>}                
-//             </div>
-//         )
-//     }
-// }
-
 import React from "react";
 import {
   AreaChartOutlined,
@@ -24,6 +8,7 @@ import {
 } from "@ant-design/icons";
 import { Menu } from "antd";
 import { useState } from "react";
+import { TABLENAME } from "../utils/Variable";
 
 const items = [
     {
@@ -32,15 +17,15 @@ const items = [
         icon: <AlignRightOutlined />
     },{
         key: 2,
-        label: '资产负债表',
+        label: TABLENAME.BALANCETABLE,
         icon: <PieChartOutlined />
     },{
         key: 3,
-        label: '现金流量表',
+        label: TABLENAME.CASHFLOWTABLE,
         icon: <AreaChartOutlined />
     },{
         key: 4,
-        label: '利润表',
+        label: TABLENAME.INCOMETABLE,
         icon: <RiseOutlined />
     }
 ];

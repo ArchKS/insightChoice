@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React from 'react'
 import { Table } from 'antd';
 import { useSelector, useDispatch } from 'react-redux';
@@ -5,9 +6,9 @@ import { setIndex } from '../store/features/setRowIndex';
 
 const TableHeight = 500;
 
-const LyTableComponent = (props) => {
+const LyTableComponent = () => {
     const dispatch = useDispatch();
-    const { ActiveTable } = useSelector((store: any) => store.setTable);
+    const { ActiveTable } = useSelector((store) => store.setTable);
 
     const onSelectChange = (newSelectedRowKeys) => {
         dispatch(setIndex(newSelectedRowKeys));

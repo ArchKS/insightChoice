@@ -1,22 +1,15 @@
-import React, { useEffect, useRef } from "react";
+import React, { useRef } from "react";
 import Sidebar from './components/Sidebar';
 import LyTabsComponent from './components/LyTabs';
 import LyTableComponent from './components/LyTable';
-import { retDefaultOptions, getSeriesDataFromDataSource, getXaisxDataFromColumns, generateSeriesItem } from './utils/dataTypeConvert'
-// eslint-disable-next-line
-import { ThemeJson } from './utils/echartRel'
+import { retDefaultOptions, getSeriesDataFromDataSource, getXaisxDataFromColumns, generateSeriesItem } from './utils/dataConvert'
 import { useSelector, useDispatch } from 'react-redux';
 import ReactECharts from "echarts-for-react";
 import { Button, message, Tooltip } from 'antd';
 import { setIndex } from './store/features/setRowIndex'
 import { resetOption } from './store/features/setOption'
-import { ClearOutlined  } from '@ant-design/icons';
-// eslint-disable-next-line
-import * as echarts from 'echarts'
-
-// echarts.registerTheme('vte',ThemeJson)
-
-const ITEMSUFFIX = "(亿元)"
+import { ClearOutlined } from '@ant-design/icons';
+import { TABLENAME,columnNameSuffix } from "./utils/Variable";
 
 function App() {
   const dispatch = useDispatch();
@@ -24,21 +17,11 @@ function App() {
   let { ActiveTable, AppTables } = useSelector(store => store.setTable);
   let { selectIndex } = useSelector(store => store.setRowIndex);
   const echartsRef = useRef(null);
-
-  const reset = () => { // 重置图标，和changeTab的时候需要用到重置功能
+  const clearOptions = () => {
     // 暴力重置法，不这样清不干净
-    echartsRef.current.getEchartsInstance().clear();
+    echartsRef.current.getEchartsInstance().clear(); // 重置图标，和changeTab的时候需要用到重置功能
     dispatch(resetOption({}));
     dispatch(setIndex([]));
-  }
-
-  useEffect(()=>{
-    // setTheme();
-    console.log(echartsRef.current.getEchartsInstance());
-  },[])
-
-  const clearOptions = () => {
-    reset();
     message.success(`重置成功`, 1)
   }
 
@@ -88,7 +71,7 @@ function App() {
       "经营活动产生的现金流量净额": [],
       "投资活动产生的现金流量净额": [],
     };
-    let crashFlowTable = getCertainTable('现金流量表');
+    let crashFlowTable = getCertainTable(TABLENAME.CASHFLOWTABLE);
     if (!crashFlowTable) return;
 
     // 根据当前表格和想要获取的行，获取opt
@@ -104,7 +87,7 @@ function App() {
       "研发费用": [],
       "财务费用": [],
     };
-    let profieTable = getCertainTable('利润表');
+    let profieTable = getCertainTable(TABLENAME.INCOMETABLE);
     if (!profieTable) return;
 
     // 根据当前表格和想要获取的行，获取opt
@@ -117,7 +100,7 @@ function App() {
     let reg = new RegExp(tbName);
 
     for (let Table of AppTables) {
-      if (reg.test(Table.fileName)) { // 判断当前是否为利润表，如果不是则退出
+      if (reg.test(Table.fileName)) {
         certainTable = Table;
         break;
       }
@@ -153,15 +136,15 @@ function App() {
       "在建工程": [],
       "工程物资": []
     }
-    let balanceSheetTable = getCertainTable('资产负债表');
+    let balanceSheetTable = getCertainTable(TABLENAME.BALANCETABLE);
     if (!balanceSheetTable) return;
 
     // 根据当前表格和想要获取的行，获取opt
-    let opt = constructStackAndFixedKeyOpt(balanceSheetTable, selectObjExpend,'line');
+    let opt = constructStackAndFixedKeyOpt(balanceSheetTable, selectObjExpend, 'line');
     let series = opt.series;
     console.log('series: ', series); // 无形资产 NaN
     for (let item of series) {
-      let name = item.name.replace(ITEMSUFFIX, '').trim();
+      let name = item.name.replace(columnNameSuffix, '').trim();
       switch (name) {
         case "货币资金": multiSelectObj["货币资金"] = item; break
         case "存货": multiSelectObj["存货"] = item; break;
@@ -208,14 +191,14 @@ function App() {
 
 
   /* 从指定表中选出指定字段，构造堆叠数据 */
-  const constructStackAndFixedKeyOpt = (pointTable, selectObj,seriesType="bar") => {
+  const constructStackAndFixedKeyOpt = (pointTable, selectObj, seriesType = "bar") => {
     // xAxis data
     let xAxis = getXaisxDataFromColumns(pointTable.columns);
     let hasDataSelectObj = {}; // 替代selectObj，不然会出现NAN数组
     // 获取selectObj中key指定的数据
     for (let row of pointTable.dataSource) {
       let [title, data] = getSeriesDataFromDataSource(row, xAxis); // title: 财务费用(亿元)
-      let fmtTitle = title.replace(ITEMSUFFIX, '');
+      let fmtTitle = title.replace(columnNameSuffix, '');
       for (let key in selectObj) {
         if (key === fmtTitle) {
           hasDataSelectObj[key] = data;
@@ -225,15 +208,17 @@ function App() {
     // 构造echart option对象
     let opt = retDefaultOptions();
     opt.xAxis.data = xAxis;
-    opt.series = [];
+
+    const seriesArr = [];
 
     for (let key in hasDataSelectObj) {
       let seriesDataObj = generateSeriesItem(hasDataSelectObj[key], key);
       seriesDataObj.stack = 'all';
-      seriesDataObj.type = seriesType
+      seriesDataObj.type = seriesType;
       seriesDataObj.areaStyle = {};
-      opt.series.push(seriesDataObj);
+      seriesArr.push(seriesDataObj);
     }
+    opt.series = seriesArr;
     return opt;
   }
 

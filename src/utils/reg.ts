@@ -1,1 +1,0 @@
-export const Ext = /(\.[a-z][A-Z]+)/i;
