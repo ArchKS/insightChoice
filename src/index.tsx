@@ -15,4 +15,4 @@ root.render(
 );
 
 
-console.log();
+console.log('%c【PUBLISH TIME】-> ','color:#5FD068;margin-left: 20%;padding: 20px;');

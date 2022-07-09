@@ -1,5 +1,5 @@
 #!/bin/bash
-file_name="src/index.ts"
+file_name="src/index.tsx"
 msg="update"
 
 if [[ ! -z $1 ]];then
