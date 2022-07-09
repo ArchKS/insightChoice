@@ -23,7 +23,6 @@ const LyDraw = () => {
     let [stackType, setStackType] = React.useState('stack');
 
     // 标记未分类tag：从所有tag中过滤出已经分类的tag
-    // getAllColumnName没有过滤数据为空的列名
     let TableTags = getAllColumnName(ActiveTable);
     let FlatenHasDrawTag = hasDrawTag.map(v => v.tag).flat(1);
     let haveNotSelectedTags = [];
