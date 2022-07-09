@@ -7,17 +7,23 @@ import { ClearOutlined } from '@ant-design/icons';
 import Sidebar from './components/Sidebar';
 import LyTabsComponent from './components/LyTabs';
 import LyTableComponent from './components/LyTable';
+import LyDraw from './components/LyDraw';
+
 import { setIndex } from './store/features/setRowIndex'
 import { resetOption } from './store/features/setOption'
-import { TABLENAME, columnNameSuffix } from "./utils/Variable";
-import { retDefaultOptions, getSeriesDataFromDataSource, getXaisxDataFromColumns, generateSeriesItem,convertSpecRowToOption,addObj } from './utils/dataConvert'
+import { TABLENAME } from "./utils/Variable";
+import { retDefaultOptions, getSeriesDataFromDataSource, getXaisxDataFromColumns, generateSeriesItem, convertSpecRowToOption,level1AndLevel2Combina } from './utils/dataConvert'
+import { setVisible } from "./store/features/setDraw";
+import { isEmpty } from "./utils/getType";
 
 function App() {
   const dispatch = useDispatch();
   let { option } = useSelector(store => store.setOption);
   let { ActiveTable, AppTables } = useSelector(store => store.setTable);
   let { selectIndex } = useSelector(store => store.setRowIndex);
+  let { visible } = useSelector(store => store.setDraw);
   const echartsRef = React.useRef(null);
+
   const clearOptions = () => {
     // 暴力重置法，不这样清不干净
     echartsRef.current.getEchartsInstance().clear(); // 重置图标，和changeTab的时候需要用到重置功能
@@ -100,62 +106,27 @@ function App() {
   /* 构建资产堆积图，包括货币资金、存货、无形资产、应收类资产、固定资产 */
   const drawFundStack = () => {
     /* 财务报表·资产负债表中的内容 */
-    let multiSelectObj = {
-      "货币资金": {}, // ["货币资金"],
-      "存货": {},// ["存货"],
-      "无形资产": {},// ["商誉", "无形资产"],
-      "应收类资产": {}, // ["应收票据及应收账款", "其他应收款合计"],
-      "固定资产": {}//["固定资产", "在建工程", "", ""]
-    }
-
-    let selectObjExpend = {
-      "货币资金": [],
-      "存货": [],
-      "商誉": [],
-      "无形资产": [],
-      "应收票据及应收账款": [],
-      "其他应收款合计": [],
-      "固定资产": [],
-      "在建工程": [],
-      "工程物资": []
-    }
     let balanceSheetTable = getCertainTable(TABLENAME.BALANCETABLE);
     if (!balanceSheetTable) return;
-
-    // 根据当前表格和想要获取的行，获取opt
-    let opt = convertSpecRowToOption(balanceSheetTable, selectObjExpend, 'line');
-    let series = opt.series;
-    for (let item of series) {
-      let name = item.name.replace(columnNameSuffix, '').trim();
-      switch (name) {
-        case "货币资金": multiSelectObj["货币资金"] = item; break
-        case "存货": multiSelectObj["存货"] = item; break;
-
-        case "商誉":
-        case "无形资产":
-          multiSelectObj["无形资产"] = addObj(multiSelectObj["无形资产"], item);
-          multiSelectObj["无形资产"].name = "无形资产";
-          break;
-
-        case "应收票据及应收账款":
-        case "其他应收款合计":
-          multiSelectObj["应收类资产"] = addObj(multiSelectObj["应收类资产"], item);
-          multiSelectObj["应收类资产"].name = "应收类资产";
-          break;
-
-        case "固定资产":
-        case "在建工程":
-        case "工程物资":
-          multiSelectObj["固定资产"] = addObj(multiSelectObj["固定资产"], item);
-          multiSelectObj["固定资产"].name = "固定资产";
-          break;
-        default: break;
-      }
+    let obj = {
+      "固定资产": ["固定资产", "在建工程", "工程物资"],
+      "应收类资产": ["应收票据及应收账款", "其他应收款合计", "应收利息", "应收款项类投资"],
+      "货币资金": ["货币资金"],
+      "存货": ["存货"],
+      "无形资产":["无形资产","商誉"]
     }
-    opt.series = Object.values(multiSelectObj).filter(v=>JSON.stringify(v) !== '{}');
+    let opt = level1AndLevel2Combina(balanceSheetTable,obj)
     dispatch(resetOption(opt));
   }
 
+  const customDraw = () => {
+    // let pointTable = ActiveTable;
+    if(isEmpty(ActiveTable)){
+      message.error("当前没有表单")
+    }else{
+      dispatch(setVisible(true));
+    }
+  }
 
   // 寻找AppTables中指定名称的表，模糊搜索，找到后返回Table
   const getCertainTable = (tbName) => {
@@ -170,7 +141,7 @@ function App() {
     }
 
     if (!certainTable) {
-      message.error(`当前不存在${tbName}`, 3);
+      message.error(`该功能需要${tbName},当前不存在${tbName}`, 3);
       return false;
     } else {
       return certainTable;
@@ -215,7 +186,10 @@ function App() {
             <Tooltip placement="bottomLeft" title="利润表中的各种费用：包括财务、销售、研发、管理费用" arrowPointAtCenter>
               <Button type="primary" className="draw_button" onClick={drawCost}>费用构成</Button>
             </Tooltip>
+
+            <Button type="primary" className="draw_button" onClick={customDraw}>自定义</Button>
           </div>
+          {visible === true ? <LyDraw></LyDraw> : <div></div>}
         </div>
         <div className="bottom">
 

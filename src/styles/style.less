@@ -21,7 +21,7 @@ body,
     overflow-x: hidden;
 
     .top {
-      .draw_button{
+      .draw_button {
         margin-right: 10px;
       }
     }
@@ -34,21 +34,28 @@ body,
 }
 
 
-#sheets{
+#sheets {
   display: none;
   position: absolute;
   margin-right: -1000px;
   margin-top: -1000px;
 }
-.ant-table-content{
+
+.ant-table-content {
   overflow: inherit !important;
 }
 
-.ant-table-thead > tr > th, .ant-table-tbody > tr > td, .ant-table tfoot > tr > th, .ant-table tfoot > tr > td {
+.ant-table-thead>tr>th,
+.ant-table-tbody>tr>td,
+.ant-table tfoot>tr>th,
+.ant-table tfoot>tr>td {
   padding: 5px 16px !important;
 }
 
-.ant-tabs-top > .ant-tabs-nav, .ant-tabs-bottom > .ant-tabs-nav, .ant-tabs-top > div > .ant-tabs-nav, .ant-tabs-bottom > div > .ant-tabs-nav {
+.ant-tabs-top>.ant-tabs-nav,
+.ant-tabs-bottom>.ant-tabs-nav,
+.ant-tabs-top>div>.ant-tabs-nav,
+.ant-tabs-bottom>div>.ant-tabs-nav {
   margin-bottom: 0 !important;
 }
 
@@ -57,9 +64,49 @@ body,
   height: 100vh;
   max-width: 140px;
 }
+
 .menubar {
   height: 100%;
 }
-.icon_bottom {
+
+.draw_wrapper {
+  margin: 10px 40px;
+}
+.tags_wrapper {
+  margin: 10px 0;
+}
+
+.input_wrapper {
+  display: flex;
+  margin-top: 20px;
+
+  .add_item_btn {
+    width: 100px;
+  }
+}
+
+.group_wrapper {
+  margin-top: 20px;
+}
+
+.submit_wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+  transform: translate(-50%, -50%);
+ 
+}
+.switch_wrapper{
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  transform: translate(-50%, -50%);
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  width: 150px;
 
 }

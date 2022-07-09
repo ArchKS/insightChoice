@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react'
 import { Table } from 'antd';
 import { useSelector, useDispatch } from 'react-redux';

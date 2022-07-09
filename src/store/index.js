@@ -2,7 +2,7 @@ import { configureStore } from "@reduxjs/toolkit";
 import setTable from "./features/setTables";
 import setRowIndex from './features/setRowIndex'
 import setOption from "./features/setOption" ;
-import setPane from "./features/setPane" ;
+import setDraw from "./features/setDraw" ;
 
 
 
@@ -11,7 +11,7 @@ const store = configureStore({
         setTable: setTable,
         setRowIndex: setRowIndex,
         setOption:setOption,
-        setPane:setPane,
+        setDraw:setDraw,
     },
     middleware: (getDefaultMiddleware)=>[
         ...getDefaultMiddleware({serializableCheck: false}),

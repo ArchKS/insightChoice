@@ -1,5 +1,7 @@
 
 import * as XLSX from "xlsx";
+import { isEmpty } from "./getType";
+import getType from "./getType";
 import { HEADERKEY, YearDecorate ,columnNameSuffix} from "./Variable";
 
 // 把xlsx文件解析成json格式的数据
@@ -272,4 +274,72 @@ export function addObj  (seriesItem1, seriesItem2) {
         seriesItem1 = seriesItem2;
     }
     return seriesItem1;
+}
+
+
+// 根据table获取其标签名
+// 取出dataSource中__EMPTY的值 HEADERKEY
+export function getAllColumnName(Table){
+    let dataSource = Table.dataSource;
+    let titles = dataSource.map(row=>{
+        let vals = Object.values(row).filter(t=> !isEmpty(t));
+        if(vals.length <= 2){ //除了__EMPTY 还有 lineNumber
+            return ""
+        }else{
+            return row[HEADERKEY].replace(columnNameSuffix,'');
+        }
+    });
+    return uniq(titles.filter(v=>!isEmpty(v)));
+}
+
+// 数组去重
+export function uniq(arr){
+    return Array.from(new Set(arr))
+}
+
+
+export function getRandomColor(){
+    return '#'+Math.floor(Math.random()*16777215).toString(16); 
+}
+
+
+export function level1AndLevel2Combina(table,obj,seriesType = "line", stackType ="all"){
+    
+      let ExpendSelected = {};
+     
+      for (let val of Object.values(obj).flat(1)) {
+        ExpendSelected[val] = [];
+      }
+  
+      // 根据当前表格和想要获取的行，获取opt
+      let opt = convertSpecRowToOption(table, ExpendSelected, seriesType,stackType);
+      let series = opt.series;
+      let seriesNameArr = Object.keys(obj);
+  
+      for (let item of series) {
+        let name = item.name.replace(columnNameSuffix, '').trim();
+  
+        // 赋值
+        for (let seriesName of seriesNameArr) {
+          let segmentNameArr = obj[seriesName];
+          for (let segmentNameIndex in segmentNameArr) {
+            let segmentName = obj[seriesName][segmentNameIndex]; // level2的名称
+            if (segmentName === name) {
+              obj[seriesName][segmentNameIndex] = item;
+            }
+  
+          }
+        }
+      }
+  
+      // 相加
+      for (let seriesName of seriesNameArr) {
+        let segmentItemArr = obj[seriesName].filter(v => getType(v) === "Object"); // 排除没有值的
+        obj[seriesName] = segmentItemArr.reduce((res, v) => {
+          return addObj(res, v)
+        })
+        obj[seriesName].name = seriesName; // 改名
+      }  
+      opt.series = Object.values(obj).filter(v => JSON.stringify(v) !== '{}');
+      return opt;
 }

@@ -29,14 +29,6 @@ const LyTabsComponent = () => {
     setActiveKey(key);
   };
 
-  // 点击新增tab
-  const addPanes = (fileName) => {
-    const newPanes = [...panes, { key: fileName, title: fileName }];
-    // dispatch(doSetPane());
-    setPanes(newPanes);
-    setActiveKey(newActiveKey);
-  };
-
   const remove = (targetKey) => {
     const targetIndex = panes.findIndex((pane) => pane.key === targetKey);
     const newPanes = panes.filter((pane) => pane.key !== targetKey);
