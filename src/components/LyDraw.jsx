@@ -118,7 +118,7 @@ const LyDraw = () => {
                     <Button type='primary' onClick={doSubmit} >SUBMIT</Button>
                 </div>
                 <div className="switch_wrapper">
-                   是否堆叠  <Switch defaultChecked onChange={changeStackType}/>
+                   是否堆叠  <Switch defaultChecked={stackType==="all"? true : false} onChange={changeStackType}/>
                 </div>
             </Drawer>
         </div>
