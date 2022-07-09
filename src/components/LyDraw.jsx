@@ -1,7 +1,7 @@
 import * as React from 'react'
 import { Drawer, Button, Tag, Input, Switch } from 'antd';
 import { useSelector, useDispatch } from 'react-redux';
-import { setVisible, setHasDrawTag } from '../store/features/setDraw';
+import { setVisible, setHasDrawTag,setStack } from '../store/features/setDraw';
 import { getAllColumnName, getRandomColor, level1AndLevel2Combina } from '../utils/dataConvert'
 import { resetOption } from '../store/features/setOption'
 const { CheckableTag } = Tag;
@@ -15,12 +15,11 @@ const { CheckableTag } = Tag;
 const LyDraw = () => {
     const dispatch = useDispatch();
 
-    const { visible } = useSelector(store => store.setDraw);
+    const { visible,hasDrawTag,stackType } = useSelector(store => store.setDraw);
     const { ActiveTable } = useSelector(store => store.setTable);
-    const { hasDrawTag } = useSelector(store => store.setDraw);
+
     let [selectedTags, setSelectedTags] = React.useState([]);
     let [itemName, setItemName] = React.useState('');
-    let [stackType, setStackType] = React.useState('stack');
 
     // 标记未分类tag：从所有tag中过滤出已经分类的tag
     let TableTags = getAllColumnName(ActiveTable);
@@ -80,9 +79,9 @@ const LyDraw = () => {
     }
     const changeStackType = (checked) => {
         if (checked) {
-            setStackType("all");
+            dispatch(setStack("all"));
         } else {
-            setStackType("");
+            dispatch(setStack(""));
         }
     }
 
