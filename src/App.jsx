@@ -237,7 +237,6 @@ function App() {
           </div>
           <div className="settings">
 
-
             <Button type="primary" icon={<ClearOutlined />} className="draw_button" onClick={clearOptions}>重置图表</Button>
             <Button type="primary" className="draw_button" onClick={drawMultiSelect}>同表绘制</Button>
             <Button type="primary" className="draw_button" onClick={stackMultiSelect}>同表堆积</Button>
@@ -261,6 +260,7 @@ function App() {
             </Tooltip>
 
             <Button type="primary" className="draw_button" onClick={customDraw}>自定义</Button>
+            <Button type="primary" className="draw_button" onClick={()=>{setIsModalVisible(true)}}>报表示例</Button>
           </div>
           {visible === true ? <LyDraw></LyDraw> : <div></div>}
         </div>
