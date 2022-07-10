@@ -1,7 +1,7 @@
 import * as React from "react";
 import { useSelector, useDispatch } from 'react-redux';
 import ReactECharts from "echarts-for-react";
-import { Button, message, Tooltip } from 'antd';
+import { Button, message, Tooltip, Modal } from 'antd';
 import { ClearOutlined } from '@ant-design/icons';
 
 import Sidebar from './components/Sidebar';
@@ -15,6 +15,9 @@ import { columnNameSuffix, TABLENAME } from "./utils/Variable";
 import { retDefaultOptions, getSeriesDataFromDataSource, getXaisxDataFromColumns, generateSeriesItem, convertSpecRowToOption, level1AndLevel2Combina } from './utils/dataConvert'
 import { setVisible } from "./store/features/setDraw";
 import { isEmpty } from "./utils/getType";
+
+
+
 
 function App() {
   const dispatch = useDispatch();
@@ -169,8 +172,8 @@ function App() {
     };
 
     let maxCount = 5; // 最多展示多少个饼图
-    let startCount = 10 ;
-    
+    let startCount = 10;
+
     for (let index = xData.length - maxCount; index < xData.length; index++) {
       let year = xData[index];
       let seriesItem = {
@@ -180,8 +183,8 @@ function App() {
         radius: window.innerWidth / maxCount / 2.8,
         data: [],
       };
-      
-      startCount+=100/maxCount ;
+
+      startCount += 100 / maxCount;
 
       for (let itemIndex in yData) {
         let name = yData[itemIndex].name;
@@ -195,8 +198,32 @@ function App() {
   }
 
 
+  // 设置初始引导弹窗
+  let flag;
+  if(window.localStorage.isModalVisible && Number(window.localStorage.isModalVisible)=== 1 ){
+    flag = false;
+  }else{
+    flag = true;
+  }
+  let [isModalVisible, setIsModalVisible] = React.useState(flag);
+  const tableExampleUrl = "https://github.com/ArchKS/archks.github.io/tree/master/TABLE";
+  const handleOk = () => {
+    setIsModalVisible(false);
+    window.localStorage.isModalVisible = 1;
+    window.open(tableExampleUrl);
+  }
+  const handleCancel = () => {
+    window.localStorage.isModalVisible = 1;
+    setIsModalVisible(false)
+  }
+
   return (
     <div className="App">
+      <div className="global_wrapper">
+        <Modal title="财报报表示例" visible={isModalVisible} onOk={handleOk} onCancel={handleCancel}>
+          <a href={tableExampleUrl}>{tableExampleUrl}</a>
+        </Modal>
+      </div>
       <div className="left_wrapper">
         <Sidebar></Sidebar>
       </div>
