@@ -86,7 +86,7 @@ const LyTabsComponent = () => {
           ))}
         </Tabs>
       </div>
-      <div className="input_wrapper">
+      <div className="file_input_wrapper">
         <input type="file" name="sheets" id="sheets" multiple ref={inputEl} onChange={uploadSheet} />
       </div>
     </div>

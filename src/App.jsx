@@ -11,8 +11,8 @@ import LyDraw from './components/LyDraw';
 
 import { setIndex } from './store/features/setRowIndex'
 import { resetOption } from './store/features/setOption'
-import { TABLENAME } from "./utils/Variable";
-import { retDefaultOptions, getSeriesDataFromDataSource, getXaisxDataFromColumns, generateSeriesItem, convertSpecRowToOption,level1AndLevel2Combina } from './utils/dataConvert'
+import { columnNameSuffix, TABLENAME } from "./utils/Variable";
+import { retDefaultOptions, getSeriesDataFromDataSource, getXaisxDataFromColumns, generateSeriesItem, convertSpecRowToOption, level1AndLevel2Combina } from './utils/dataConvert'
 import { setVisible } from "./store/features/setDraw";
 import { isEmpty } from "./utils/getType";
 
@@ -43,6 +43,7 @@ function App() {
     option.series = [];
     for (let index of selectIndex) {
       let [title, data] = getSeriesDataFromDataSource(ActiveTable.dataSource[index - 1], xAxis);
+      title = title.replace(columnNameSuffix, '')
       let seriesDataObj = generateSeriesItem(data, title);
       option.series.push(seriesDataObj);
     }
@@ -102,7 +103,6 @@ function App() {
     dispatch(resetOption(opt));
   }
 
-
   /* 构建资产堆积图，包括货币资金、存货、无形资产、应收类资产、固定资产 */
   const drawFundStack = () => {
     /* 财务报表·资产负债表中的内容 */
@@ -113,17 +113,17 @@ function App() {
       "应收类资产": ["应收票据及应收账款", "其他应收款合计", "应收利息", "应收款项类投资"],
       "货币资金": ["货币资金"],
       "存货": ["存货"],
-      "无形资产":["无形资产","商誉"]
+      "无形资产": ["无形资产", "商誉"]
     }
-    let opt = level1AndLevel2Combina(balanceSheetTable,obj)
+    let opt = level1AndLevel2Combina(balanceSheetTable, obj)
     dispatch(resetOption(opt));
   }
 
   const customDraw = () => {
     // let pointTable = ActiveTable;
-    if(isEmpty(ActiveTable)){
+    if (isEmpty(ActiveTable)) {
       message.error("当前没有表单")
-    }else{
+    } else {
       dispatch(setVisible(true));
     }
   }
@@ -146,6 +146,52 @@ function App() {
     } else {
       return certainTable;
     }
+  }
+
+  // 绘制选中项目的饼图
+  const drawPie = () => {
+    // selectIndex
+    // 1. 从选中项湖区xAxis和yAxis
+    let option = genMultiOption();
+    let xData = option.xAxis.data;
+    let yData = option.series;
+
+    let rawOpt = {
+      series: [],
+      tooltip: {
+        trigger: 'item',
+        formatter: '{a} <br/>{b} : {c} ({d}%)'
+      },
+      legend: {
+        top: '5%',
+        left: 'center'
+      },
+    };
+
+    let maxCount = 5; // 最多展示多少个饼图
+    let startCount = 10 ;
+    
+    for (let index = xData.length - maxCount; index < xData.length; index++) {
+      let year = xData[index];
+      let seriesItem = {
+        name: year,
+        type: 'pie',
+        center: [`${startCount}%`, '50%'],
+        radius: window.innerWidth / maxCount / 2.8,
+        data: [],
+      };
+      
+      startCount+=100/maxCount ;
+
+      for (let itemIndex in yData) {
+        let name = yData[itemIndex].name;
+        let value = yData[itemIndex].data[index];
+        seriesItem.data.push({ name, value });
+      }
+      rawOpt.series.push(seriesItem);
+
+    }
+    dispatch(resetOption(rawOpt));
   }
 
 
@@ -172,7 +218,7 @@ function App() {
 
             <span className="draw_button">&nbsp;| &nbsp;</span>
 
-            <Button type="primary" className="draw_button" onClick={test} disabled>饼图</Button>
+            <Button type="primary" className="draw_button" onClick={drawPie}>饼图</Button>
 
             <span className="draw_button">&nbsp;| &nbsp;</span>
 
