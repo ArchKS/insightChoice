@@ -112,3 +112,25 @@ body,
   width: 150px;
 
 }
+
+
+@ExpendBgColor: #C6DCE4;
+@SummaryBgColor: #F47C7C;
+
+.row_item_content_by_self{
+  background-color: @ExpendBgColor;
+}
+.row_content_by_self > :nth-child(1) {
+  background-color: @ExpendBgColor;
+}
+.row_content_by_self > :nth-child(2) {
+  background-color: @ExpendBgColor;
+}
+
+
+.summary_content_by_self {
+  background-color: @SummaryBgColor;
+  *{
+    background-color: @SummaryBgColor;
+  }
+}

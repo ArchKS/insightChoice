@@ -21,3 +21,12 @@ export const TABLENAME = {
 export const YearDecorate = "年年报"; // 2001年年报 2002年年报
 
 export const HEADERKEY = "__EMPTY"
+
+
+export const SUMMARYAARRAY = [
+    "资产总计(亿元)",
+    "负债合计(亿元)",
+    "股东权益合计(亿元)"
+
+    // ----------
+]
