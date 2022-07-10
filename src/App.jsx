@@ -154,6 +154,12 @@ function App() {
   // 绘制选中项目的饼图
   const drawPie = () => {
     // selectIndex
+
+    if(isEmpty(ActiveTable)){
+      message.error(`当前不存在报表`);
+      return;
+    }
+
     // 1. 从选中项湖区xAxis和yAxis
     let option = genMultiOption();
     let xData = option.xAxis.data;
