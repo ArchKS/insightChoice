@@ -37,6 +37,7 @@ function App() {
 
   // 根据选中的下标，获取ActiveTable的数据，返回EchartsOption
   const genMultiOption = () => {
+    
     let option = retDefaultOptions();
     // 同一张表，绘制不同的选项
     let xAxis = getXaisxDataFromColumns(ActiveTable.columns);
@@ -55,12 +56,20 @@ function App() {
 
   // 构造多选项数据
   const drawMultiSelect = () => {
+    if(isEmpty(ActiveTable)){
+      message.error(`当前不存在报表`);
+      return;
+    }
     let opt = genMultiOption();
     dispatch(resetOption(opt));
   }
 
   // 构造堆叠多选项数据
   const stackMultiSelect = () => {
+    if(isEmpty(ActiveTable)){
+      message.error(`当前不存在报表`);
+      return;
+    }
     let opt = genMultiOption();
     for (let index in opt.series) {
       opt.series[index].stack = "all";
