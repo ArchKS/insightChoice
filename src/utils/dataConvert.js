@@ -60,30 +60,11 @@ function getDataFromJson(singleTableJson) {
     */
 
     let data = [],
-        tableBody = singleTableJson.slice(1);
+        tableBody = singleTableJson.slice(0);
     for (let index in tableBody) {
         let val = tableBody[index];
-        let isNumber = true;
-        let keys = Object.keys(val);
-        // 过滤不是数字的行，将小数点控制在两位
-        for(let key of keys){
-            let item = val[key];
-            if(key !== HEADERKEY){
-                if(!isEmpty(item)){ // '' * 1 = 0
-                    // eslint-disable-next-line
-                    if(/^[0-9\.]+$/.test(item) ){ // 有值、且不是数字
-                        val[key] = Number(Number(item).toFixed(2));
-                    }else{
-                        isNumber = false;
-                    }
-                }
-            }
-        }
-
-        if(isNumber){
-            let newObj = Object.assign({ key: Number(index) + 1 }, val);
-            data.push(newObj);
-        }
+        let newObj = Object.assign({ key: Number(index) + 1 }, val);
+        data.push(newObj);
     }
     return data;
 }

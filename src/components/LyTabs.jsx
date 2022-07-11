@@ -63,7 +63,7 @@ const LyTabsComponent = () => {
       let isuniq = AppTables.every((table) => table.fileName !== fileName);
       if (isuniq) {
         let json = await getFirstJsonFromSheet(file);
-        let [c, d] = getColAndDataFromJson(json);
+        let [c, d] = getColAndDataFromJson(json); // dataSource没有返回__blank的title
         panesArr.push({ key: fileName, title: fileName })
         dispatch(addTable({ fileName: fileName, columns: c, dataSource: d }));
         setActiveKey(newActiveKey);

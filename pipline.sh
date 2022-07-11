@@ -7,7 +7,7 @@ if [[ ! -z $1 ]];then
 fi
 
 fmt_date=`date "+%Y-%m-%d %H:%M:%S"`
-tf="console.log('%UPDATE TIME】-> ${fmt_date}','color:#5FD068;margin-left: 20%;padding: 20px;');"
+tf="console.log('%c【UPDATE TIME】-> ${fmt_date}','color:#5FD068;margin-left: 20%;padding: 20px;');"
 gsed -i -e '$s/console.log(.*);/'"$tf"'/' ${file_name}
 
 
