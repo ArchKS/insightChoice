@@ -1,5 +1,5 @@
 #!/bin/bash
-file_name="src/index.jsx"
+file_name="src/main.jsx"
 msg="update"
 
 if [[ ! -z $1 ]];then
