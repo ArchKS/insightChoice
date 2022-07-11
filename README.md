@@ -1,6 +1,8 @@
 ## insight choice
 
-> https://github.com/ArchKS/insightChoice
+> https://archks.github.io/
+
+
 
 
 
