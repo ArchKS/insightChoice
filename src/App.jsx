@@ -215,6 +215,35 @@ function App() {
     setIsModalVisible(false)
   }
 
+  const drawMarked = () => {
+    // 给series添加marPoint，仅限于type=bar|line
+    if (isEmpty(ActiveTable)) {
+      message.error(`当前不存在报表`);
+      return;
+    }
+    let opt = genMultiOption();
+    for (let index in opt.series) {
+      let type = opt.series[index].type;
+
+      if (type === 'line' || type === 'bar') {
+        opt.series[index].markPoint = {
+          data: [
+            { type: 'max' },
+            { type: 'min' },
+          ]
+        }
+        opt.series[index].markLine = {
+          data: [
+            { type: 'average' }
+          ]
+        }
+      }
+    }
+
+    dispatch(resetOption(opt));
+  }
+
+
   return (
     <div className="App">
       <div className="global_wrapper">
@@ -236,13 +265,27 @@ function App() {
           <div className="settings">
 
             <Button type="primary" icon={<ClearOutlined />} className="draw_button" onClick={clearOptions}>重置图表</Button>
-            <Button type="primary" className="draw_button" onClick={drawMultiSelect}>同表绘制</Button>
-            <Button type="primary" className="draw_button" onClick={stackMultiSelect}>同表堆积</Button>
-            <Button type="primary" className="draw_button" onClick={test} disabled>异表绘制</Button>
 
+            <Tooltip placement="bottomLeft" title="不同的项在同一张表上绘制，比如比亚迪的净利润和成本的走势" arrowPointAtCenter>
+              <Button type="primary" className="draw_button" onClick={drawMultiSelect}>同表绘制</Button>
+            </Tooltip>
+
+
+            <Tooltip placement="bottomLeft" title="堆叠同表绘制展示的各项数据" arrowPointAtCenter>
+              <Button type="primary" className="draw_button" onClick={stackMultiSelect}>同表堆积</Button>
+            </Tooltip>
+            <Tooltip placement="bottomLeft" title="相同的项在不同的表上进行绘制，比如不同银行的ROE" arrowPointAtCenter>
+              <Button type="primary" className="draw_button" onClick={test} disabled>异表绘制</Button>
+            </Tooltip>
+
+
+            <Tooltip placement="bottomLeft" title="添加均线和最大最小值" arrowPointAtCenter>
+              <Button type="primary" className="draw_button" onClick={drawMarked}>同表标记</Button>
+            </Tooltip>
             <span className="draw_button">&nbsp;| &nbsp;</span>
 
             <Button type="primary" className="draw_button" onClick={drawPie}>饼图</Button>
+
 
             <span className="draw_button">&nbsp;| &nbsp;</span>
 

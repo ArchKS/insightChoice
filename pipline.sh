@@ -16,6 +16,7 @@ git commit -m "$msg"
 git push
 
 npm run build
+rm -rf ../githubpages/*
 cp -r ./build/* ../githubpages/
 cp -r ./assets/ ../githubpages/TABLE
 cd ../githubpages/
