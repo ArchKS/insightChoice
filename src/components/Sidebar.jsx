@@ -17,15 +17,15 @@ const items = [
         icon: <AlignRightOutlined />
     },{
         key: 2,
-        label: TABLENAME.BALANCETABLE,
+        label: TABLENAME.BALANCETABLE.name,
         icon: <PieChartOutlined />
     },{
         key: 3,
-        label: TABLENAME.CASHFLOWTABLE,
+        label: TABLENAME.CASHFLOWTABLE.name,
         icon: <AreaChartOutlined />
     },{
         key: 4,
-        label: TABLENAME.INCOMETABLE,
+        label: TABLENAME.INCOMETABLE.name,
         icon: <RiseOutlined />
     }
 ];

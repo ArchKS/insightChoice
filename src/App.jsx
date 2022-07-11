@@ -37,7 +37,7 @@ function App() {
 
   // 根据选中的下标，获取ActiveTable的数据，返回EchartsOption
   const genMultiOption = () => {
-    
+
     let option = retDefaultOptions();
     // 同一张表，绘制不同的选项
     let xAxis = getXaisxDataFromColumns(ActiveTable.columns);
@@ -56,7 +56,7 @@ function App() {
 
   // 构造多选项数据
   const drawMultiSelect = () => {
-    if(isEmpty(ActiveTable)){
+    if (isEmpty(ActiveTable)) {
       message.error(`当前不存在报表`);
       return;
     }
@@ -66,7 +66,7 @@ function App() {
 
   // 构造堆叠多选项数据
   const stackMultiSelect = () => {
-    if(isEmpty(ActiveTable)){
+    if (isEmpty(ActiveTable)) {
       message.error(`当前不存在报表`);
       return;
     }
@@ -86,48 +86,31 @@ function App() {
 
   /* 构造现金流量表：经营、筹资、投资堆叠数据 */
   const drawCrashFlow = () => {
-    const selectObj = {
-      "筹资活动产生的现金流量净额": [],
-      "经营活动产生的现金流量净额": [],
-      "投资活动产生的现金流量净额": [],
-    };
-    let crashFlowTable = getCertainTable(TABLENAME.CASHFLOWTABLE);
+    let crashFlowTable = getCertainTable(TABLENAME.CASHFLOWTABLE.name);
     if (!crashFlowTable) return;
 
     // 根据当前表格和想要获取的行，获取opt
-    let opt = convertSpecRowToOption(crashFlowTable, selectObj);
+    let opt = convertSpecRowToOption(crashFlowTable, TABLENAME.CASHFLOWTABLE.rules);
     dispatch(resetOption(opt));
   }
 
   /* 利润表的费用：销售、研发、管理、财务的堆叠数据 */
   const drawCost = () => {
-    const selectObj = {
-      "销售费用": [],
-      "管理费用": [],
-      "研发费用": [],
-      "财务费用": [],
-    };
-    let profieTable = getCertainTable(TABLENAME.INCOMETABLE);
+    let profieTable = getCertainTable(TABLENAME.INCOMETABLE.name);
     if (!profieTable) return;
 
     // 根据当前表格和想要获取的行，获取opt
-    let opt = convertSpecRowToOption(profieTable, selectObj);
+    let opt = convertSpecRowToOption(profieTable, TABLENAME.INCOMETABLE.rules);
+    console.log(TABLENAME.INCOMETABLE.rules);
     dispatch(resetOption(opt));
   }
 
   /* 构建资产堆积图，包括货币资金、存货、无形资产、应收类资产、固定资产 */
   const drawFundStack = () => {
     /* 财务报表·资产负债表中的内容 */
-    let balanceSheetTable = getCertainTable(TABLENAME.BALANCETABLE);
+    let balanceSheetTable = getCertainTable(TABLENAME.BALANCETABLE.name);
     if (!balanceSheetTable) return;
-    let obj = {
-      "固定资产": ["固定资产", "在建工程", "工程物资"],
-      "应收类资产": ["应收票据及应收账款", "其他应收款合计", "应收利息", "应收款项类投资"],
-      "货币资金": ["货币资金"],
-      "存货": ["存货"],
-      "无形资产": ["无形资产", "商誉"]
-    }
-    let opt = level1AndLevel2Combina(balanceSheetTable, obj)
+    let opt = level1AndLevel2Combina(balanceSheetTable, TABLENAME.BALANCETABLE.rules)
     dispatch(resetOption(opt));
   }
 
@@ -164,7 +147,7 @@ function App() {
   const drawPie = () => {
     // selectIndex
 
-    if(isEmpty(ActiveTable)){
+    if (isEmpty(ActiveTable)) {
       message.error(`当前不存在报表`);
       return;
     }
@@ -215,9 +198,9 @@ function App() {
 
   // 设置初始引导弹窗
   let flag;
-  if(window.localStorage.isModalVisible && Number(window.localStorage.isModalVisible)=== 1 ){
+  if (window.localStorage.isModalVisible && Number(window.localStorage.isModalVisible) === 1) {
     flag = false;
-  }else{
+  } else {
     flag = true;
   }
   let [isModalVisible, setIsModalVisible] = React.useState(flag);
@@ -275,7 +258,7 @@ function App() {
             </Tooltip>
 
             <Button type="primary" className="draw_button" onClick={customDraw}>自定义</Button>
-            <Button type="primary" className="draw_button" onClick={()=>{setIsModalVisible(true)}} ghost>报表示例</Button>
+            <Button type="primary" className="draw_button" onClick={() => { setIsModalVisible(true) }} ghost>报表示例</Button>
           </div>
           {visible === true ? <LyDraw></LyDraw> : <div></div>}
         </div>

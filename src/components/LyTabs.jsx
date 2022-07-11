@@ -5,6 +5,7 @@ import { Tabs, message } from 'antd';
 import { getColAndDataFromJson, getFirstJsonFromSheet } from '../utils/dataConvert';
 import { addTable, removeTable, changeTable } from '../store/features/setTables';
 import { setIndex } from '../store/features/setRowIndex';
+import {setStyleToTableColumn} from '../utils/tool'
 // import { doSetPane } from '../store/features/setPane';
 
 const { TabPane } = Tabs;
@@ -27,6 +28,7 @@ const LyTabsComponent = () => {
     dispatch(changeTable(key));
     dispatch(setIndex([]));
     setActiveKey(key);
+    setStyleToTableColumn()
   };
 
   const remove = (targetKey) => {
