@@ -25,4 +25,4 @@ root.render(
 
 
 
-console.log('%c【UPDATE TIME】-> 2022-07-11 09:25:33','color:#5FD068;margin-left: 20%;padding: 20px;');
+console.log('%c【UPDATE TIME】-> 2022-07-11 09:27:39','color:#5FD068;margin-left: 20%;padding: 20px;');
