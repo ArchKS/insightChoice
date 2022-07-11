@@ -1,12 +1,12 @@
 import { createSlice } from '@reduxjs/toolkit';
 
-interface iTable {
-    fileName: string;
-    columns: any[];
-    dataSource: any[];
-}
+// interface iTable {
+//     fileName: string;
+//     columns: any[];
+//     dataSource: any[];
+// }
 
-const initialState:iTable = {
+const initialState = {
     AppTables: [],
     ActiveTable: {}
 };

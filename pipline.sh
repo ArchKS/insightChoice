@@ -17,8 +17,8 @@ git push
 
 npm run build
 rm -rf ../githubpages/*
-cp -r ./build/* ../githubpages/
-cp -r ./assets/ ../githubpages/TABLE
+cp -r ./dist/* ../githubpages/
+cp -r ./assets/*.xlsx ../githubpages/TABLE
 cd ../githubpages/
 
 git add . 
