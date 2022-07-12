@@ -65,7 +65,7 @@ function getDataFromJson(singleTableJson) {
         let val = tableBody[index];
         for(let key in val){
             // eslint-disable-next-line
-            if(/^[0-9\.]+$/.test(val[key])){
+            if(/^[\-0-9\.]+$/.test(val[key])){ // \- 考虑负数
                 val[key] = val[key].toFixed(2);
             }
         }
@@ -209,7 +209,7 @@ export function getRowDataByTitle(specName,table) {
     let xAxis = getXaisxDataFromColumns(table.columns);
     let dataSource = table.dataSource;
     for(let rowData of dataSource){
-        let [title, data] = getSeriesDataFromDataSource(rowData, xAxis); // title: 财务费用(亿元)
+        let [title, data] = getSeriesDataFromDataSource(rowData, xAxis); // title: 财务费用(亿元)  title: 一、营业总收入
         let fmtTitle = title.replace(columnNameSuffix, '');
         if(specName === title || specName === fmtTitle){
             return data;

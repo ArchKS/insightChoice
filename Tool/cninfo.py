@@ -96,7 +96,7 @@ class CninfoCrawler:
 
         url = 'http://www.cninfo.com.cn/new/hisAnnouncement/query'
         response = requests.post(url, headers=self.headers, data=req_data, verify=False)
-        print(f"开始搜集财报 stock: {stock_info['zwjc']} status_code: {response.status_code} response: {response.text}")
+        print(f"开始搜集财报 stock: {stock_info['zwjc']} status_code: {response.status_code}")
         json_data = response.json()
         announcements = json_data.get("announcements")
         has_more = json_data.get("hasMore")
@@ -127,7 +127,7 @@ class CninfoCrawler:
 
 if __name__ == '__main__':
     cninfo = CninfoCrawler()
-    cninfo.save_path = "/Users/lulu/文档/股票基金/公司财报"  # 用的话自己调整目录
-    cninfo.start_download("海康威视", "年报")     # 使用样例1
+    cninfo.save_path = "/Users/zendu/Desktop/scratch/insightChoice"  # 用的话自己调整目录
+    cninfo.start_download("双汇发展", "年报")     # 使用样例1
     # cninfo.start_download("海康威视", "全部")   # 使用样例2
     # cninfo.start_download("600519", "年报") # 使用样例3 茅台
