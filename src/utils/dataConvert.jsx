@@ -1,8 +1,8 @@
-
+import { deepClone } from './getType'
 import * as XLSX from "xlsx";
 import { isEmpty } from "./getType";
 import getType from "./getType";
-import { HEADERKEY, YearDecorate ,columnNameSuffix} from "./Variable";
+import { HEADERKEY, YearDecorate, columnNameSuffix } from "./Variable";
 
 // 把xlsx文件解析成json格式的数据
 export function getFirstJsonFromSheet(file) { // json.js
@@ -11,7 +11,7 @@ export function getFirstJsonFromSheet(file) { // json.js
         reader.readAsBinaryString(file);
         reader.onload = (evt) => {
             let result = evt.target.result;
-            let xlsxData = XLSX.read(result, { type: "binary" }) ;
+            let xlsxData = XLSX.read(result, { type: "binary" });
             for (let sheetName in xlsxData.Sheets) {
                 let singleWorkSheet = xlsxData.Sheets[sheetName];
                 let json = XLSX.utils.sheet_to_json(singleWorkSheet, { defval: "" });
@@ -63,9 +63,9 @@ function getDataFromJson(singleTableJson) {
         tableBody = singleTableJson.slice(0);
     for (let index in tableBody) {
         let val = tableBody[index];
-        for(let key in val){
+        for (let key in val) {
             // eslint-disable-next-line
-            if(/^[\-0-9\.]+$/.test(val[key])){ // \- 考虑负数
+            if (/^[\-0-9\.]+$/.test(val[key])) { // \- 考虑负数
                 val[key] = +Number(val[key]).toFixed(2);
             }
         }
@@ -98,7 +98,7 @@ export function getXaisxDataFromColumns(columns) {
 
 // 将一个TABLE的DataSource数据转为ECAHRTS的Series数据
 // ::::: 缺少排序
-export function getSeriesDataFromDataSource(singleRowData,xAxis) {
+export function getSeriesDataFromDataSource(singleRowData, xAxis) {
     let title = singleRowData.__EMPTY,
         data = [];
     for (let key in singleRowData) {
@@ -205,13 +205,13 @@ export const datas = getDataFromJson(data);
 
 
 // 根据列名获取当前行的数据，比如 销售成本 -> [ 23,01, 22.31, 34.09, 34.55 ]
-export function getRowDataByTitle(specName,table) {
+export function getRowDataByTitle(specName, table) {
     let xAxis = getXaisxDataFromColumns(table.columns);
     let dataSource = table.dataSource;
-    for(let rowData of dataSource){
+    for (let rowData of dataSource) {
         let [title, data] = getSeriesDataFromDataSource(rowData, xAxis); // title: 财务费用(亿元)  title: 一、营业总收入
         let fmtTitle = title.replace(columnNameSuffix, '');
-        if(specName === title || specName === fmtTitle){
+        if (specName === title || specName === fmtTitle) {
             return data;
         }
     }
@@ -234,12 +234,12 @@ export function getRowDataByTitle(specName,table) {
     }  
     从当前表批量获取指定名称的项
  */
-export function getRowDatasByTitleObj(specObj,pointTable){
+export function getRowDatasByTitleObj(specObj, pointTable) {
     let hasDataSelectObj = {};
     Object.keys(specObj).forEach(key => {
         let res = getRowDataByTitle(key, pointTable);
         if (res && res.length > 0) {
-          hasDataSelectObj[key] = res;
+            hasDataSelectObj[key] = res;
         }
     });
     return hasDataSelectObj;
@@ -247,9 +247,9 @@ export function getRowDatasByTitleObj(specObj,pointTable){
 
 
 /* 从当前表，批量获取指定名称的项，封装成echarts的option返回 */
-export function convertSpecRowToOption(pointTable,specObj,seriesType="bar",stackType="all"){
+export function convertSpecRowToOption(pointTable, specObj, seriesType = "bar", stackType = "all") {
     let xAxis = getXaisxDataFromColumns(pointTable.columns);
-    let retObj = getRowDatasByTitleObj(specObj,pointTable);
+    let retObj = getRowDatasByTitleObj(specObj, pointTable);
     let opt = retDefaultOptions();
     opt.series = [];
     const seriesArr = []
@@ -262,18 +262,18 @@ export function convertSpecRowToOption(pointTable,specObj,seriesType="bar",stack
         seriesArr.push(seriesDataObj);
     }
     opt.series = seriesArr;
-    console.log('opt?:',opt.series);
+    console.log('opt?:', opt.series);
     return opt;
 }
 
 
-  // 两个series的item相加
-export function addObj  (seriesItem1, seriesItem2) {
+// 两个series的item相加
+export function addObj(seriesItem1, seriesItem2) {
     if (seriesItem1.hasOwnProperty("name")) {
         for (let index in seriesItem2.data) {
-        let v1 = seriesItem2.data[index] || 0; // 避免出现 ""+""的情况
-        let v2 = seriesItem1.data[index] || 0;
-        seriesItem1.data[index] = Number((v1 + v2).toFixed(2));
+            let v1 = seriesItem2.data[index] || 0; // 避免出现 ""+""的情况
+            let v2 = seriesItem1.data[index] || 0;
+            seriesItem1.data[index] = Number((v1 + v2).toFixed(2));
         }
     } else {
         seriesItem1 = seriesItem2;
@@ -284,69 +284,87 @@ export function addObj  (seriesItem1, seriesItem2) {
 
 // 根据table获取其标签名
 // 取出dataSource中__EMPTY的值 HEADERKEY
-export function getAllColumnName(Table){
+export function getAllColumnName(Table) {
     let dataSource = Table.dataSource;
-    let titles = dataSource.map(row=>{
-        let vals = Object.values(row).filter(t=> !isEmpty(t));
-        if(vals.length <= 2){ //除了__EMPTY 还有 lineNumber
+    let titles = dataSource.map(row => {
+        let vals = Object.values(row).filter(t => !isEmpty(t));
+        if (vals.length <= 2) { //除了__EMPTY 还有 lineNumber
             return ""
-        }else{
-            return row[HEADERKEY].replace(columnNameSuffix,'');
+        } else {
+            return row[HEADERKEY].replace(columnNameSuffix, '');
         }
     });
-    return uniq(titles.filter(v=>!isEmpty(v)));
+    return uniq(titles.filter(v => !isEmpty(v)));
 }
 
 // 数组去重
-export function uniq(arr){
+export function uniq(arr) {
     return Array.from(new Set(arr))
 }
 
 
-export function getRandomColor(){
-    return '#'+Math.floor(Math.random()*16777215).toString(16); 
+export function getRandomColor() {
+    return '#' + Math.floor(Math.random() * 16777215).toString(16);
 }
 
 
-export function level1AndLevel2Combina(table,obj,seriesType = "line", stackType ="all"){
-    
-      let ExpendSelected = {};
-     
-      for (let val of Object.values(obj).flat(1)) {
+export function level1AndLevel2Combina(table, obj, seriesType = "line", stackType = "all") {
+
+    let ExpendSelected = {};
+
+    for (let val of Object.values(obj).flat(1)) {
         ExpendSelected[val] = [];
-      }
-  
-      // 根据当前表格和想要获取的行，获取opt
-      let opt = convertSpecRowToOption(table, ExpendSelected, seriesType,stackType);
-      let series = opt.series;
-      let seriesNameArr = Object.keys(obj);
-  
-      for (let item of series) {
+    }
+
+    // 根据当前表格和想要获取的行，获取opt
+    let opt = convertSpecRowToOption(table, ExpendSelected, seriesType, stackType);
+    let series = opt.series;
+    let seriesNameArr = Object.keys(obj);
+
+    for (let item of series) {
         let name = item.name.replace(columnNameSuffix, '').trim();
-  
+
         // 赋值
         for (let seriesName of seriesNameArr) {
-          let segmentNameArr = obj[seriesName];
-          for (let segmentNameIndex in segmentNameArr) {
-            let segmentName = obj[seriesName][segmentNameIndex]; // level2的名称
-            if (segmentName === name) {
-              obj[seriesName][segmentNameIndex] = item;
+            let segmentNameArr = obj[seriesName];
+            for (let segmentNameIndex in segmentNameArr) {
+                let segmentName = obj[seriesName][segmentNameIndex]; // level2的名称
+                if (segmentName === name) {
+                    obj[seriesName][segmentNameIndex] = item;
+                }
+
             }
-  
-          }
         }
-      }
-  
-      // 相加
-      for (let seriesName of seriesNameArr) {
+    }
+
+    // 相加
+    for (let seriesName of seriesNameArr) {
         let segmentItemArr = obj[seriesName].filter(v => getType(v) === "Object"); // 排除没有值的
         obj[seriesName] = segmentItemArr.reduce((res, v) => {
-          return addObj(res, v)
+            return addObj(res, v)
         })
         obj[seriesName].name = seriesName; // 改名
-      }  
-      opt.series = Object.values(obj).filter(v => JSON.stringify(v) !== '{}');
-      return opt;
+    }
+    opt.series = Object.values(obj).filter(v => JSON.stringify(v) !== '{}');
+    return opt;
 }
 
 
+export function getChangeRateFromOpt(opt) {
+    let series = opt.series;
+    for (let index in series) {
+        let item = series[index];
+        let rateItem = deepClone(item);
+        let rateArr = [''];
+        for (let i = 0; i < rateItem.data.length; i++) {
+            let r = ((rateItem.data[i + 1] - rateItem.data[i]) * 100/ rateItem.data[i]).toFixed(2);
+            rateArr[i+1] = r;
+        }
+        rateItem.data = rateArr;
+        rateItem.name = rateItem.name + "增长率";
+        // opt.series[index].type = 'bar';
+        // opt.yAxis.type = 'log';
+        opt.series.push(rateItem);
+    }
+    return opt;
+}

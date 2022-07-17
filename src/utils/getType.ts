@@ -23,3 +23,35 @@ export function isEmpty(val: any) {
     }
     return flag
 }
+
+export const deepClone = <T>(Op: T): T => {
+    /* ps JSON.stringfy & parse have some bug */
+    /* 1. delete Symbol Type */
+    /* 2. error with BigInt Type */
+    /* 3. change re to empty object */
+    /* 4. change data type to string */
+    /* 5. delete undefined type */
+
+    let res: any;
+    if (getType(Op) === "Object") {
+        res = {};
+    } else if (getType(Op) === "Array") {
+        res = [];
+    }
+
+    let keys = [
+        ...Object.keys(Op),
+        ...Object.getOwnPropertySymbols(Op)
+    ];
+
+    keys.forEach((key:any) => {
+        // @ts-ignore
+        let item = Op[key];
+        if (getType(item) === 'Object') {
+            res[key] = deepClone(item);
+        } else {
+            res[key] = item;
+        }
+    })
+    return res;
+}

@@ -12,7 +12,7 @@ import LyDraw from './components/LyDraw';
 import { setIndex } from './store/features/setRowIndex'
 import { resetOption } from './store/features/setOption'
 import { columnNameSuffix, TABLENAME } from "./utils/Variable";
-import { retDefaultOptions, getSeriesDataFromDataSource, getXaisxDataFromColumns, generateSeriesItem, convertSpecRowToOption, level1AndLevel2Combina } from './utils/dataConvert'
+import { retDefaultOptions, getSeriesDataFromDataSource, getXaisxDataFromColumns, generateSeriesItem, convertSpecRowToOption, level1AndLevel2Combina,getChangeRateFromOpt } from './utils/dataConvert'
 import { setVisible } from "./store/features/setDraw";
 import { isEmpty } from "./utils/getType";
 
@@ -196,6 +196,19 @@ function App() {
   }
 
 
+  // 多张表的变化率
+  const drawChangeRate = () => {
+    if (isEmpty(ActiveTable)) {
+      message.error(`当前不存在报表`);
+      return;
+    }
+    let opt = genMultiOption();
+    opt = getChangeRateFromOpt(opt);
+    dispatch(resetOption(opt));
+  }
+
+
+
   // 设置初始引导弹窗
   let flag;
   if (window.localStorage.isModalVisible && Number(window.localStorage.isModalVisible) === 1) {
@@ -278,13 +291,17 @@ function App() {
               <Button type="primary" className="draw_button" onClick={test} disabled>异表绘制</Button>
             </Tooltip>
 
+            <Button type="primary" className="draw_button" onClick={drawPie}>饼图</Button>
 
-            <Tooltip placement="bottomLeft" title="添加均线和最大最小值" arrowPointAtCenter>
-              <Button type="primary" className="draw_button" onClick={drawMarked}>同表标记</Button>
-            </Tooltip>
             <span className="draw_button">&nbsp;| &nbsp;</span>
 
-            <Button type="primary" className="draw_button" onClick={drawPie}>饼图</Button>
+            <Tooltip placement="bottomLeft" title="添加均线和最大最小值" arrowPointAtCenter>
+              <Button type="primary" className="draw_button" onClick={drawMarked}>平均值</Button>
+            </Tooltip>
+
+            <Tooltip placement="bottomLeft" title="前后数据变化的趋势" arrowPointAtCenter>
+              <Button type="primary" className="draw_button" onClick={drawChangeRate}>增长率</Button>
+            </Tooltip>
 
 
             <span className="draw_button">&nbsp;| &nbsp;</span>
