@@ -13,13 +13,13 @@ export const columnNameSuffix = '(亿元)'
 export const TABLENAME = {
     'INCOMETABLE': {
         name: "利润表",
-        rules:{
+        rules: {
             "销售费用": [],
             "管理费用": [],
             "研发费用": [],
-            "财务费用": [], 
+            "财务费用": [],
         }
-       
+
     },
     'CASHFLOWTABLE': {
         name: "现金流量表",
@@ -30,7 +30,7 @@ export const TABLENAME = {
         }
     },
     'BALANCETABLE': {
-        name:  "资产负债表",
+        name: "资产负债表",
         rules: {
             "固定资产": ["固定资产", "在建工程", "工程物资"],
             "应收类资产": ["应收票据及应收账款", "其他应收款合计", "应收利息", "应收款项类投资"],

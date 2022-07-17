@@ -5,7 +5,6 @@ import './styles/style.less'
 import App from './App';
 import store from './store';
 import { Provider } from 'react-redux';
-
 const root = ReactDOM.createRoot(document.getElementById('root'));
 
 root.render(
@@ -13,6 +12,8 @@ root.render(
         <App />
     </Provider>
 );
+
+
 
 // setTimeout(() => {
 //     // eslint-disable-next-line no-restricted-globals
@@ -25,4 +26,4 @@ root.render(
 
 
 
-console.log('%c【UPDATE TIME】-> 2022-07-12 14:41:08','color:#5FD068;margin-left: 20%;padding: 20px;');
+console.log('%c【UPDATE TIME】-> 2022-07-17 16:30:11','color:#5FD068;margin-left: 20%;padding: 20px;');
