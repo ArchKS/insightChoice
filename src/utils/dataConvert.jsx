@@ -66,7 +66,7 @@ function getDataFromJson(singleTableJson) {
         for(let key in val){
             // eslint-disable-next-line
             if(/^[\-0-9\.]+$/.test(val[key])){ // \- 考虑负数
-                val[key] = Number(val[key]).toFixed(2);
+                val[key] = +Number(val[key]).toFixed(2);
             }
         }
         let newObj = Object.assign({ key: Number(index) + 1 }, val);
