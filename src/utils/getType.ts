@@ -44,7 +44,7 @@ export const deepClone = <T>(Op: T): T => {
         ...Object.getOwnPropertySymbols(Op)
     ];
 
-    keys.forEach((key:any) => {
+    keys.forEach((key: any) => {
         // @ts-ignore
         let item = Op[key];
         if (getType(item) === 'Object') {
@@ -54,4 +54,8 @@ export const deepClone = <T>(Op: T): T => {
         }
     })
     return res;
+}
+
+export const isDigital = (val: any): Boolean => {
+    return /^[+-]?\d+(\.\d+)?$/.test(val);
 }

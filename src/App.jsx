@@ -12,7 +12,16 @@ import LyDraw from './components/LyDraw';
 import { setIndex } from './store/features/setRowIndex'
 import { resetOption } from './store/features/setOption'
 import { columnNameSuffix, TABLENAME } from "./utils/Variable";
-import { retDefaultOptions, getSeriesDataFromDataSource, getXaisxDataFromColumns, generateSeriesItem, convertSpecRowToOption, level1AndLevel2Combina,getChangeRateFromOpt } from './utils/dataConvert'
+import { 
+  getRate,
+  retDefaultOptions, 
+  generateSeriesItem, 
+  getChangeRateFromOpt,
+  convertSpecRowToOption, 
+  level1AndLevel2Combina, 
+  getXaisxDataFromColumns, 
+  getSeriesDataFromDataSource, 
+ } from './utils/dataConvert'
 import { setVisible } from "./store/features/setDraw";
 import { isEmpty } from "./utils/getType";
 
@@ -196,7 +205,7 @@ function App() {
   }
 
 
-  // 多张表的变化率
+  // 变化率
   const drawChangeRate = () => {
     if (isEmpty(ActiveTable)) {
       message.error(`当前不存在报表`);
@@ -204,6 +213,17 @@ function App() {
     }
     let opt = genMultiOption();
     opt = getChangeRateFromOpt(opt);
+    dispatch(resetOption(opt));
+  }
+
+  // 占比
+  const drawRate = () => {
+    if (isEmpty(ActiveTable)) {
+      message.error(`当前不存在报表`);
+      return;
+    }
+    let opt = genMultiOption();
+    opt = getRate(opt);
     dispatch(resetOption(opt));
   }
 
@@ -228,6 +248,7 @@ function App() {
     setIsModalVisible(false)
   }
 
+  // 平均值
   const drawMarked = () => {
     // 给series添加marPoint，仅限于type=bar|line
     if (isEmpty(ActiveTable)) {
@@ -291,7 +312,7 @@ function App() {
               <Button type="primary" className="draw_button" onClick={test} disabled>异表绘制</Button>
             </Tooltip>
 
-            <Button type="primary" className="draw_button" onClick={drawPie}>饼图</Button>
+            {/* <Button type="primary" className="draw_button" onClick={drawPie}>饼图</Button> */}
 
             <span className="draw_button">&nbsp;| &nbsp;</span>
 
@@ -304,7 +325,7 @@ function App() {
             </Tooltip>
 
             <Tooltip placement="bottomLeft" title="个数据占总值的比例" arrowPointAtCenter>
-              <Button type="primary" className="draw_button" onClick={drawChangeRate} disabled>同行分析</Button>
+              <Button type="primary" className="draw_button" onClick={drawRate} >同行分析</Button>
             </Tooltip>
 
 

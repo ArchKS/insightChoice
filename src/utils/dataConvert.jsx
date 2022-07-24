@@ -1,4 +1,4 @@
-import { deepClone } from './getType'
+import { deepClone, isDigital } from './getType'
 import * as XLSX from "xlsx";
 import { isEmpty } from "./getType";
 import getType from "./getType";
@@ -349,22 +349,121 @@ export function level1AndLevel2Combina(table, obj, seriesType = "line", stackTyp
     return opt;
 }
 
-
+// 增长率
 export function getChangeRateFromOpt(opt) {
-    let series = opt.series;
-    for (let index in series) {
-        let item = series[index];
-        let rateItem = deepClone(item);
-        let rateArr = [''];
-        for (let i = 0; i < rateItem.data.length; i++) {
-            let r = ((rateItem.data[i + 1] - rateItem.data[i]) * 100/ rateItem.data[i]).toFixed(2);
-            rateArr[i+1] = r;
+    let oldSeries = deepClone(opt.series);
+    opt.series = [];
+    for (let index in oldSeries) {
+        let item = oldSeries[index];
+        let rateArr = [];
+        for (let i = 0; i < item.data.length; i++) {
+            let a = item.data[i + 1],
+                b = item.data[i], r;
+
+            if (!isDigital(a)) {
+                a = 0;
+            }
+            if (!isDigital(b)) {
+                r = 0;
+            } else {
+                r = ((a - b) * 100 / b).toFixed(2);
+            }
+            rateArr[i + 1] = r;
         }
-        rateItem.data = rateArr;
-        rateItem.name = rateItem.name + "增长率";
-        // opt.series[index].type = 'bar';
-        // opt.yAxis.type = 'log';
-        opt.series.push(rateItem);
+        item.data = rateArr;
+        item.name = item.name + "增长率";
+        opt.series.push(item);
     }
+
+
+    opt.tooltip.formatter = (v) => {
+        return v.map(v => {
+            let seriesName = v.seriesName;
+            let value = v.value;
+            if (isDigital(value) && value !== 0 && value !== '') {
+                return `${seriesName}: ${+value}% <br>`
+            } else {
+                return ''
+            }
+        }).join('');
+    }
+    console.log(opt);
+
     return opt;
 }
+
+// 2022年07月24日
+// [1,1,1,2] + [2,2,2,3] => [3,3,3,5] => [33%,33%,33%,40%] + [66%,66%,66%,60%]
+// 从值的变化，转变为值占整体百分比的变化，用柱状图的方式展示饼图
+export function getRate(opt) {
+    // 如果占比的值是负数怎么办
+    let isNavi = false;
+    let newOpt = deepClone(opt);
+    let totalArr = new Array(opt.xAxis.data.length).fill(0);
+    for (let index = 0; index < totalArr.length; index++) { // data的第几个值
+        for (let item of newOpt.series) {                   // 第几个data
+            let data = item.data;
+            let digital = data[index];
+            if (digital < 0) {
+                alert(`${item.name}存在负数，无法计算比例！`);
+                isNavi = true;
+                break;
+            }
+            if (isDigital(digital)) {
+                totalArr[index] += data[index];
+                console.log(totalArr[index], data[index]);
+            }
+        }
+        if (isNavi) {
+            break;
+        }
+    }
+
+    console.log(totalArr);
+
+    if (isNavi) {
+        return opt;
+    }
+
+    for (let index = 0; index < totalArr.length; index++) {
+        for (let item of newOpt.series) {
+            let data = item.data;
+            let digital = data[index]
+            if (!/\d/.test(digital)) {
+                digital = 0;
+            }
+            if (totalArr[index] === 0) {
+                data[index] = 0;
+            } else {
+                data[index] = Math.round(+(digital * 100).toFixed(2) / +totalArr[index].toFixed(2));
+            }
+
+            if (isNaN(data[index])) {
+                // console.log(`${item.name}, ${data[index]}, digital: ${digital} , totalArr[${index}]:${totalArr[index]}`);
+            }
+
+            item.stack = "all";
+            item.type = "bar";
+            item.areaStyle = {};
+        }
+    }
+    newOpt.tooltip.formatter = (v) => {
+        return v.map(v => {
+            let seriesName = v.seriesName;
+            let value = v.value;
+            if (isDigital(value) && value !== 0 && value !== '') {
+                return `${seriesName}: ${value}% <br>`
+            } else {
+                return ''
+            }
+        }).join('');
+    }
+
+
+
+    console.log(newOpt);
+    return newOpt;
+}
+
+// 3 -2 4
+// 
