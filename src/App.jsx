@@ -303,6 +303,10 @@ function App() {
               <Button type="primary" className="draw_button" onClick={drawChangeRate}>增长率</Button>
             </Tooltip>
 
+            <Tooltip placement="bottomLeft" title="个数据占总值的比例" arrowPointAtCenter>
+              <Button type="primary" className="draw_button" onClick={drawChangeRate} disabled>同行分析</Button>
+            </Tooltip>
+
 
             <span className="draw_button">&nbsp;| &nbsp;</span>
 
