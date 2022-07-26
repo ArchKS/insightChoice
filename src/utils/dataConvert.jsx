@@ -356,10 +356,9 @@ export function getChangeRateFromOpt(opt) {
     for (let index in oldSeries) {
         let item = oldSeries[index];
         let rateArr = [];
-        for (let i = 0; i < item.data.length; i++) {
+        for (let i = 0; i < item.data.length-1; i++) {
             let a = item.data[i + 1],
                 b = item.data[i], r;
-
             if (!isDigital(a)) {
                 a = 0;
             }
@@ -368,12 +367,15 @@ export function getChangeRateFromOpt(opt) {
             } else {
                 r = ((a - b) * 100 / b).toFixed(2);
             }
-            rateArr[i + 1] = r;
+            
+            rateArr[i] = r;
         }
+        console.log(rateArr);
         item.data = rateArr;
         item.name = item.name + "增长率";
         opt.series.push(item);
     }
+    opt.xAxis.data = opt.xAxis.data.slice(1);
 
 
     opt.tooltip.formatter = (v) => {
