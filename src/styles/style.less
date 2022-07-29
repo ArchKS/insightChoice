@@ -2,6 +2,9 @@
   margin: 0;
   padding: 0;
 }
+.top > *{
+  font-family: "Gill Sans", sans-serif;
+}
 
 
 html,
@@ -114,29 +117,33 @@ body,
 
 .settings{
   zoom: .9;
+  .mini_search{
+    margin-top: 10px;
+    background-color: #ccc;
+    height: 30px;
+    input{
+      color: #2E0249;
+      padding: 6px;
+      letter-spacing: 1px;
+    }
+    button.ant-btn.ant-btn-primary.ant-input-search-button {
+      padding: 10px;
+      height: 42px;
+    }
+  }
 }
 
 
 @ExpendBgColor: #EEEEEE;
-@SummaryBgColor: #C6DCE4;
+@SummaryBgColor: #DF7861;
+.row_content_by_self{
 
-.row_item_content_by_self{
-  background-color: @ExpendBgColor;
-}
-.row_content_by_self > :nth-child(1) {
-  background-color: @ExpendBgColor;
-}
-.row_content_by_self > :nth-child(2) {
-  background-color: @ExpendBgColor;
 }
 
-
-.summary_content_by_self {
+.summary_content_by_self > * {
   background-color: @SummaryBgColor;
-  *{
-    background-color: @SummaryBgColor;
-  }
 }
+
 .ant-table-body{
   resize: vertical !important;
 }
