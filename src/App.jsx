@@ -36,11 +36,13 @@ function App() {
   /* isStack 是否堆积 */
   let [isStack, setIsStack] = React.useState(true);
 
+  /* 是否存在报表 */
+  let [hasEcharts, setHasEcharts] = React.useState(false);
+
   const dispatch = useDispatch();
   let { option } = useSelector(store => store.setOption);
   let { ActiveTable, AppTables } = useSelector(store => store.setTable);
   let { selectIndex } = useSelector(store => store.setRowIndex);
-  let { visible } = useSelector(store => store.setDraw);
   const echartsRef = React.useRef(null);
 
   const clearOptions = () => {
@@ -48,17 +50,16 @@ function App() {
     echartsRef.current.getEchartsInstance().clear(); // 重置图标，和changeTab的时候需要用到重置功能
     dispatch(resetOption({}));
     dispatch(setIndex([]));
-    message.success(`重置成功`, 1)
+    message.success(`重置成功`, 1);
+    setHasEcharts(false);
   }
 
   // 根据选中的下标，获取ActiveTable的数据，返回EchartsOption
   const genMultiOption = () => {
-
     let option = retDefaultOptions();
     // 同一张表，绘制不同的选项
     let xAxis = getXaisxDataFromColumns(ActiveTable.columns);
     option.xAxis.data = xAxis;
-
     // 根据选中的下标，获取Active表的数据
     option.series = [];
     for (let index of selectIndex) {
@@ -68,6 +69,7 @@ function App() {
       seriesDataObj.type = getOriginOptType() || "line";
       option.series.push(seriesDataObj);
     }
+    setHasEcharts(true);
     return option;
   }
 
@@ -138,6 +140,7 @@ function App() {
     // 根据当前表格和想要获取的行，获取opt
     let opt = convertSpecRowToOption(crashFlowTable, TABLENAME.CASHFLOWTABLE.rules);
     dispatch(resetOption(opt));
+    setHasEcharts(true);
   }
 
   /* 利润表的费用：销售、研发、管理、财务的堆叠数据 */
@@ -149,6 +152,7 @@ function App() {
     let opt = convertSpecRowToOption(profieTable, TABLENAME.INCOMETABLE.rules);
     console.log(TABLENAME.INCOMETABLE.rules);
     dispatch(resetOption(opt));
+    setHasEcharts(true);
   }
 
   /* 构建资产堆积图，包括货币资金、存货、无形资产、应收类资产、固定资产 */
@@ -182,6 +186,7 @@ function App() {
       opt.series.push(item);
     }
     dispatch(resetOption(opt));
+    setHasEcharts(true);
   }
 
 
@@ -288,7 +293,7 @@ function App() {
 
     console.log(opt);
     dispatch(resetOption(opt));
-    return opt;
+    setHasEcharts(true);
   }
 
   // 设置初始引导弹窗
@@ -343,6 +348,51 @@ function App() {
     dispatch(resetOption(opt));
   }
 
+  const renderSettings = () => {
+    return (
+      <div className="setting_icons">
+
+        <Tooltip placement="left" title="锁定/解锁原值" arrowPointAtCenter>
+          {isLock ? <span className="iconfont icon-suoding" onClick={() => { setIsLock(!isLock) }}></span> : <span className="iconfont icon-jiesuo" onClick={() => { setIsLock(!isLock) }}></span>}
+        </Tooltip>
+
+
+        <Tooltip placement="left" title="刷新" arrowPointAtCenter>
+          <span className="iconfont icon-Updatereset_" onClick={drawMultiSelect}></span>
+        </Tooltip>
+        <Tooltip placement="left" title="增速" arrowPointAtCenter>
+          <span className="iconfont icon-zengchangshuai" onClick={drawChangeRate}></span>
+        </Tooltip>
+
+        <Tooltip placement="left" title="百分比" arrowPointAtCenter>
+          <span className="iconfont icon-percentage" onClick={drawRate}></span>
+        </Tooltip>
+
+        <Tooltip placement="left" title="平均值" arrowPointAtCenter>
+          <span className="iconfont icon-pingjunshu" onClick={drawMarked}></span>
+        </Tooltip>
+        <Tooltip placement="left" title="堆积图 / 取消堆积" arrowPointAtCenter>
+          {isStack ?
+            <span className="iconfont icon-stack" onClick={stackMultiSelect}></span>
+            :
+            <span className="iconfont icon-square_stack_d_up_slash_fill" onClick={stackMultiSelect}></span>
+          }
+        </Tooltip>
+
+        <Tooltip placement="left" title="折线图" arrowPointAtCenter>
+          <span className="iconfont icon-line-chart-line base-func" onClick={drawLine}></span>
+          {/* <span className="iconfont icon-square_stack_d_up_slash_fill"></span> */}
+        </Tooltip>
+
+        <Tooltip placement="left" title="柱状图" arrowPointAtCenter>
+          <span className="iconfont icon-chart-bar base-func" onClick={drawBar}></span>
+          {/* <span className="iconfont icon-square_stack_d_up_slash_fill"></span> */}
+        </Tooltip>
+
+
+      </div>
+    )
+  }
 
   return (
     <div className="App">
@@ -390,47 +440,7 @@ function App() {
           </div>
         </div>
         <div className="bottom">
-          <div className="setting_icons">
-
-            <Tooltip placement="left" title="锁定/解锁原值" arrowPointAtCenter>
-              {isLock ? <span className="iconfont icon-suoding" onClick={() => { setIsLock(!isLock) }}></span> : <span className="iconfont icon-jiesuo" onClick={() => { setIsLock(!isLock) }}></span>}
-            </Tooltip>
-
-
-            <Tooltip placement="left" title="刷新" arrowPointAtCenter>
-              <span className="iconfont icon-Updatereset_" onClick={drawMultiSelect}></span>
-            </Tooltip>
-            <Tooltip placement="left" title="增速" arrowPointAtCenter>
-              <span className="iconfont icon-zengchangshuai" onClick={drawChangeRate}></span>
-            </Tooltip>
-
-            <Tooltip placement="left" title="百分比" arrowPointAtCenter>
-              <span className="iconfont icon-percentage" onClick={drawRate}></span>
-            </Tooltip>
-
-            <Tooltip placement="left" title="平均值" arrowPointAtCenter>
-              <span className="iconfont icon-pingjunshu" onClick={drawMarked}></span>
-            </Tooltip>
-            <Tooltip placement="left" title="堆积图 / 取消堆积" arrowPointAtCenter>
-              {isStack ?
-                <span className="iconfont icon-stack" onClick={stackMultiSelect}></span>
-                :
-                <span className="iconfont icon-square_stack_d_up_slash_fill" onClick={stackMultiSelect}></span>
-              }
-            </Tooltip>
-
-            <Tooltip placement="left" title="折线图" arrowPointAtCenter>
-              <span className="iconfont icon-line-chart-line base-func" onClick={drawLine}></span>
-              {/* <span className="iconfont icon-square_stack_d_up_slash_fill"></span> */}
-            </Tooltip>
-
-            <Tooltip placement="left" title="柱状图" arrowPointAtCenter>
-              <span className="iconfont icon-chart-bar base-func" onClick={drawBar}></span>
-              {/* <span className="iconfont icon-square_stack_d_up_slash_fill"></span> */}
-            </Tooltip>
-
-
-          </div>
+          {hasEcharts ? renderSettings() : ""}
           <ReactECharts
             ref={echartsRef}
             option={option}
