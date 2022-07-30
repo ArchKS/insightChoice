@@ -86,7 +86,9 @@ export function miniCalc(listArr: string[], objData: TObjData, ARRAYLENGTH: numb
             } else if (typeof itemName === 'string') {
                 itemNameArray = objData[itemName];
                 if (!isEmpty(itemName) && itemNameArray === undefined) {
-                    alert(`不存在:【${itemName}】， 项目名称只能是数字、字母和中文`)
+                    // alert(`不存在:【${itemName}】， 项目名称只能是数字、字母和中文`);
+                    console.log(`不存在:【${itemName}】， 项目名称只能是数字、字母和中文`);
+                    break;
                 }
 
             } else if (typeof itemName === "object") {

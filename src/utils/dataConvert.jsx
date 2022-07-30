@@ -140,11 +140,11 @@ export function retDefaultOptions() {
         toolbox: {
             right: "8%",
             feature: {
-                saveAsImage: {},
-                magicType: {
-                    show: true,
-                    type: ["line", "bar"]
-                }
+                // saveAsImage: {},
+                // magicType: {
+                //     show: true,
+                //     type: ["line", "bar"]
+                // }
             }
         },
         legend: {
@@ -339,10 +339,15 @@ export function level1AndLevel2Combina(table, obj, seriesType = "line", stackTyp
 
     // 相加
     for (let seriesName of seriesNameArr) {
+
+        console.log(obj[seriesName]);
+        
         let segmentItemArr = obj[seriesName].filter(v => getType(v) === "Object"); // 排除没有值的
+
         obj[seriesName] = segmentItemArr.reduce((res, v) => {
             return addObj(res, v)
         })
+
         obj[seriesName].name = seriesName; // 改名
     }
     opt.series = Object.values(obj).filter(v => JSON.stringify(v) !== '{}');
@@ -466,10 +471,17 @@ export function getRate(opt) {
     console.log(newOpt);
     return newOpt;
 }
-
-
-
-
-
-
-
+/* 改变Option.series.type的类型 */
+export const changeOptType = (opt, type) => {
+    if (!opt) {
+      return;
+    }
+    let newOpt = deepClone(opt);
+    newOpt.series = [];
+    for (let index in opt.series) {
+      let item = deepClone(opt.series[index]);
+      item.type = type;
+      newOpt.series.push(item);
+    }
+    return newOpt;
+  }

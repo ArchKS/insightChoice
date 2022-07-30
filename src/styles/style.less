@@ -2,42 +2,88 @@
   margin: 0;
   padding: 0;
 }
-.top > *{
-  font-family: "Gill Sans", sans-serif;
-}
-
 
 html,
 body,
 #root {
   height: 100%;
 }
-
+.iconfont {
+  color: #F15412;
+  font-size: 20px;
+  cursor: pointer;
+  padding: 0 4px;
+}
 
 .App {
   display: flex;
-
-  .left_wrapper {}
 
   .right_wrapper {
     width: 101%;
     overflow-x: hidden;
 
     .top {
-      .draw_button {
-        margin-right: 10px;
+      * {
+        font-family: "Gill Sans", sans-serif;
       }
+
+      .tab {}
+
+      .table {}
+
+      .settings {
+        zoom: .9;
+        display: flex;
+        padding: 10px;
+        .normal_btn {
+          flex: 1;
+          display: flex;
+          justify-content: space-between;
+          .draw_button {
+            // margin-right: 1px;
+          }
+        }
+
+        .mini_search {
+          background-color: #ccc;
+          flex: 1;
+          margin-left: 10px;
+          input {
+            color: #2E0249;
+            // padding: 6px;
+            letter-spacing: 1px;
+          }
+
+          button.ant-btn.ant-btn-primary.ant-input-search-button {
+            // padding: 10px;
+            // height: 42px;
+          }
+        }
+      }
+
     }
 
     .bottom {
+      position: relative;
       margin: 40px 20px 0 30px;
+      .setting_icons{
+        position: absolute;
+        top: 0;
+        right: 0px;
+        display: flex;
+        flex-direction: column;
+        z-index: 99999999;
+        .base-func{
+          color: #3AB4F2;
+        }
+      }
     }
 
   }
 }
 
 
-#sheets {
+input#sheets {
   display: none;
   position: absolute;
   margin-right: -1000px;
@@ -75,12 +121,15 @@ body,
 .draw_wrapper {
   margin: 10px 40px;
 }
+
 .tags_wrapper {
   margin: 10px 0;
 }
-.file_input_wrapper{
+
+.file_input_wrapper {
   margin-left: -100000px;
 }
+
 .input_wrapper {
   display: flex;
   margin-top: 20px;
@@ -102,9 +151,10 @@ body,
   left: 50%;
   bottom: 0;
   transform: translate(-50%, -50%);
- 
+
 }
-.switch_wrapper{
+
+.switch_wrapper {
   position: absolute;
   right: 0;
   bottom: 0;
@@ -115,35 +165,17 @@ body,
   width: 150px;
 }
 
-.settings{
-  zoom: .9;
-  .mini_search{
-    margin-top: 10px;
-    background-color: #ccc;
-    height: 30px;
-    input{
-      color: #2E0249;
-      padding: 6px;
-      letter-spacing: 1px;
-    }
-    button.ant-btn.ant-btn-primary.ant-input-search-button {
-      padding: 10px;
-      height: 42px;
-    }
-  }
-}
 
 
 @ExpendBgColor: #EEEEEE;
 @SummaryBgColor: #DF7861;
-.row_content_by_self{
 
-}
+.row_content_by_self {}
 
-.summary_content_by_self > * {
+.summary_content_by_self>* {
   background-color: @SummaryBgColor;
 }
 
-.ant-table-body{
+.ant-table-body {
   resize: vertical !important;
 }

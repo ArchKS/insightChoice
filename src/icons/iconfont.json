@@ -1,0 +1,86 @@
+{
+  "id": "3556760",
+  "name": "IC",
+  "font_family": "iconfont",
+  "css_prefix_text": "icon-",
+  "description": "",
+  "glyphs": [
+    {
+      "icon_id": "1130",
+      "name": "锁定",
+      "font_class": "suoding",
+      "unicode": "e600",
+      "unicode_decimal": 58880
+    },
+    {
+      "icon_id": "1334",
+      "name": "解锁",
+      "font_class": "jiesuo",
+      "unicode": "e601",
+      "unicode_decimal": 58881
+    },
+    {
+      "icon_id": "16036421",
+      "name": "line-chart-line",
+      "font_class": "line-chart-line",
+      "unicode": "e7a5",
+      "unicode_decimal": 59301
+    },
+    {
+      "icon_id": "22756892",
+      "name": "chart-bar",
+      "font_class": "chart-bar",
+      "unicode": "e686",
+      "unicode_decimal": 59014
+    },
+    {
+      "icon_id": "10868635",
+      "name": "平均值",
+      "font_class": "pingjunzhi",
+      "unicode": "e8aa",
+      "unicode_decimal": 59562
+    },
+    {
+      "icon_id": "9874554",
+      "name": "KHCFDC_增长率",
+      "font_class": "zengchangshuai",
+      "unicode": "e6e4",
+      "unicode_decimal": 59108
+    },
+    {
+      "icon_id": "5806962",
+      "name": "43 Update, reset_3",
+      "font_class": "Updatereset_",
+      "unicode": "e8e4",
+      "unicode_decimal": 59620
+    },
+    {
+      "icon_id": "9080774",
+      "name": "percentage",
+      "font_class": "percentage",
+      "unicode": "e665",
+      "unicode_decimal": 58981
+    },
+    {
+      "icon_id": "11139882",
+      "name": "平均数",
+      "font_class": "pingjunshu",
+      "unicode": "e620",
+      "unicode_decimal": 58912
+    },
+    {
+      "icon_id": "401111",
+      "name": "stack",
+      "font_class": "stack",
+      "unicode": "e859",
+      "unicode_decimal": 59481
+    },
+    {
+      "icon_id": "12310658",
+      "name": "square_stack_3d_up_slash_fill",
+      "font_class": "square_stack_d_up_slash_fill",
+      "unicode": "e8da",
+      "unicode_decimal": 59610
+    }
+  ]
+}
