@@ -135,7 +135,7 @@ export function retDefaultOptions() {
         },
         series: [],
         tooltip: {
-            trigger: "axis",
+            trigger: "axis"
         },
         toolbox: {
             right: "8%",
@@ -362,7 +362,6 @@ export function getChangeRateFromOpt(opt) {
 }
 
 export function OneItemGrowthRate(opt) {
-
     let nArr = opt.series;
     let gArr = getGrowthRateArr(JSON.parse(JSON.stringify(nArr)));
     let combineArr = [];
@@ -409,34 +408,16 @@ export function OneItemGrowthRate(opt) {
             return s;
         }).join('<br>');
     }
+    opt.xAxis.data = opt.xAxis.data.slice(1);
     console.log('OneItemGrowthRate: ', opt);
     return opt;
 }
-export function MultItemsGrowthRate(opt) {
-    opt.series = getGrowthRateArr(opt.series);
-    opt.xAxis.data = opt.xAxis.data.slice(1);
-    opt.tooltip.formatter = (v) => {
-        return v.map(v => {
-            let seriesName = v.seriesName;
-            let value = v.value;
-            if (isDigital(value) && value !== 0 && value !== '') {
-                return `${seriesName}: ${+value}% <br>`
-            } else {
-                return ''
-            }
-        }).join('');
-    }
-
-    console.log(opt);
-    return opt;
-}
-
 
 export function getGrowthRateArr(rawDataArr) {
     let gArr = [];
     for (let index in rawDataArr) {
         let item = rawDataArr[index];
-        let rateArr = [];
+        let rateArr = [''];
         for (let i = 0; i < item.data.length - 1; i++) {
             let a = item.data[i + 1],
                 b = item.data[i], r;
