@@ -341,7 +341,7 @@ export function level1AndLevel2Combina(table, obj, seriesType = "line", stackTyp
     for (let seriesName of seriesNameArr) {
 
         console.log(obj[seriesName]);
-        
+
         let segmentItemArr = obj[seriesName].filter(v => getType(v) === "Object"); // 排除没有值的
 
         obj[seriesName] = segmentItemArr.reduce((res, v) => {
@@ -356,33 +356,65 @@ export function level1AndLevel2Combina(table, obj, seriesType = "line", stackTyp
 
 // 增长率
 export function getChangeRateFromOpt(opt) {
-    let oldSeries = deepClone(opt.series);
-    opt.series = [];
-    for (let index in oldSeries) {
-        let item = oldSeries[index];
-        let rateArr = [];
-        for (let i = 0; i < item.data.length-1; i++) {
-            let a = item.data[i + 1],
-                b = item.data[i], r;
-            if (!isDigital(a)) {
-                a = 0;
-            }
-            if (!isDigital(b)) {
-                r = 0;
-            } else {
-                r = ((a - b) * 100 / b).toFixed(2);
-            }
-            
-            rateArr[i] = r;
-        }
-        console.log(rateArr);
-        item.data = rateArr;
-        item.name = item.name + "增长率";
-        opt.series.push(item);
+    let npt = JSON.parse(JSON.stringify(opt));
+    npt = OneItemGrowthRate(npt);
+    return npt;
+}
+
+export function OneItemGrowthRate(opt) {
+
+    let nArr = opt.series;
+    let gArr = getGrowthRateArr(JSON.parse(JSON.stringify(nArr)));
+    let combineArr = [];
+    for (let index = 0; index < nArr.length; index++) {
+        nArr[index].type = 'bar';
+        gArr[index].type = 'line';
+        gArr[index].yAxisIndex = 1;
+        combineArr.push(nArr[index]);
+        combineArr.push(gArr[index]);
     }
+    opt.series = combineArr;
+    opt.yAxis = [{
+        splitLine: {
+            show: false
+        },
+        axisLine: {
+            lineStyle: {
+                color: '#B4B4B4',
+            }
+        },
+    }, {
+
+        splitLine: { show: false },
+        axisLine: {
+            lineStyle: {
+                color: '#B4B4B4',
+            }
+        },
+        axisLabel: {
+            formatter: '{value}%',
+        }
+    }];
+    opt.tooltip.formatter = (arr) => {
+        return arr.map(v => {
+            let seriesName = v.seriesName,
+                value = v.value,
+                marker = v.marker;
+            let s = '';
+            if (/增长率/.test(seriesName)) {
+                s = `${marker} ${seriesName} ${value}%`
+            } else {
+                s = `${marker} ${seriesName} ${value}`
+            }
+            return s;
+        }).join('<br>');
+    }
+    console.log('OneItemGrowthRate: ', opt);
+    return opt;
+}
+export function MultItemsGrowthRate(opt) {
+    opt.series = getGrowthRateArr(opt.series);
     opt.xAxis.data = opt.xAxis.data.slice(1);
-
-
     opt.tooltip.formatter = (v) => {
         return v.map(v => {
             let seriesName = v.seriesName;
@@ -394,9 +426,36 @@ export function getChangeRateFromOpt(opt) {
             }
         }).join('');
     }
-    console.log(opt);
 
+    console.log(opt);
     return opt;
+}
+
+
+export function getGrowthRateArr(rawDataArr) {
+    let gArr = [];
+    for (let index in rawDataArr) {
+        let item = rawDataArr[index];
+        let rateArr = [];
+        for (let i = 0; i < item.data.length - 1; i++) {
+            let a = item.data[i + 1],
+                b = item.data[i], r;
+            if (!isDigital(a)) {
+                a = 0;
+            }
+            if (!isDigital(b)) {
+                r = 0;
+            } else {
+                r = ((a - b) * 100 / b).toFixed(2);
+            }
+
+            rateArr[i] = r;
+        }
+        item.data = rateArr;
+        item.name = item.name + "增长率";
+        gArr.push(item);
+    }
+    return gArr;
 }
 
 // 2022年07月24日
@@ -474,14 +533,14 @@ export function getRate(opt) {
 /* 改变Option.series.type的类型 */
 export const changeOptType = (opt, type) => {
     if (!opt) {
-      return;
+        return;
     }
     let newOpt = deepClone(opt);
     newOpt.series = [];
     for (let index in opt.series) {
-      let item = deepClone(opt.series[index]);
-      item.type = type;
-      newOpt.series.push(item);
+        let item = deepClone(opt.series[index]);
+        item.type = type;
+        newOpt.series.push(item);
     }
     return newOpt;
-  }
+}

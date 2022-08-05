@@ -127,6 +127,10 @@ class CninfoCrawler:
 if __name__ == '__main__':
     cninfo = CninfoCrawler()
     cninfo.save_path = "/Users/zendu/Desktop/scratch/insightChoice"  # 用的话自己调整目录
-    cninfo.start_download("双汇发展", "年报")     # 使用样例1
+    cninfo.start_download("马应龙", "年报")     # 使用样例1
     # cninfo.start_download("海康威视", "全部")   # 使用样例2
     # cninfo.start_download("600519", "年报") # 使用样例3 茅台
+
+
+# 删除摘要
+# 
