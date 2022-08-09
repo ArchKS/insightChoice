@@ -61,13 +61,7 @@ const divArr = (arr1: number[], arr2: number[]): number[] => calcTwoArray(arr1, 
 type TObjData = {
     [key: string]: number[]
 }
-// let obj: TObjData = {
-//     "营业收入": [1, 2, 3, 4],
-//     "存货价值": [-1, 2, 3, 6]
-// }
-// let len = obj[Object.keys(obj)[0]].length as number;
-// let arrList = "10-(营业收入/存货价值)".split('') as string[];
-// let result = miniCalc(arrList, obj, len);
+
 export function miniCalc(listArr: string[], objData: TObjData, ARRAYLENGTH: number): number[] {
     let stack: number[][] = [],
         itemName: number[] | string = "",

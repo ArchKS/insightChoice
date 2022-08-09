@@ -18,12 +18,10 @@ import {
   getChangeRateFromOpt,
   getRowDatasByTitleObj,
   convertSpecRowToOption,
-
   getXaisxDataFromColumns,
   getSeriesDataFromDataSource,
 } from './utils/dataConvert'
-import { setVisible } from "./store/features/setDraw";
-import { deepClone, isEmpty } from "./utils/getType";
+import {  isEmpty } from "./utils/getType";
 
 
 
@@ -32,10 +30,8 @@ const { Search } = Input;
 function App() {
   /* isLock 是否锁定原值，如果锁定，则值不会被修改，而是用不同的形式呈现；如果没有锁定，则点击增长率、等会修改EchartsOption的值 */
   let [isLock, setIsLock] = React.useState(true);
-
   /* isStack 是否堆积 */
   let [isStack, setIsStack] = React.useState(true);
-
   /* 是否存在报表 */
   let [hasEcharts, setHasEcharts] = React.useState(false);
 
@@ -131,84 +127,6 @@ function App() {
   }
 
   const test = () => { }
-
-  /* 构造现金流量表：经营、筹资、投资堆叠数据 */
-  const drawCrashFlow = () => {
-    let crashFlowTable = getCertainTable(TABLENAME.CASHFLOWTABLE.name);
-    if (!crashFlowTable) return;
-
-    // 根据当前表格和想要获取的行，获取opt
-    let opt = convertSpecRowToOption(crashFlowTable, TABLENAME.CASHFLOWTABLE.rules);
-    dispatch(resetOption(opt));
-    setHasEcharts(true);
-  }
-
-  /* 利润表的费用：销售、研发、管理、财务的堆叠数据 */
-  const drawCost = () => {
-    let profieTable = getCertainTable(TABLENAME.INCOMETABLE.name);
-    if (!profieTable) return;
-
-    // 根据当前表格和想要获取的行，获取opt
-    let opt = convertSpecRowToOption(profieTable, TABLENAME.INCOMETABLE.rules);
-    console.log(TABLENAME.INCOMETABLE.rules);
-    dispatch(resetOption(opt));
-    setHasEcharts(true);
-  }
-
-  /* 构建资产堆积图，包括货币资金、存货、无形资产、应收类资产、固定资产 */
-  const drawFundStack = () => {
-    /* 财务报表·资产负债表中的内容 */
-    let balanceSheetTable = getCertainTable(TABLENAME.BALANCETABLE.name);
-    if (!balanceSheetTable) return;
-    let rules = JSON.parse(JSON.stringify(TABLENAME.BALANCETABLE.rules));
-    let opt = retDefaultOptions();
-    let maxLength = balanceSheetTable.columns.length - 1;
-    opt.series = [];
-    opt.xAxis.data = getXaisxDataFromColumns(balanceSheetTable.columns);
-    let keyNames = Object.keys(rules);
-    for (let name of keyNames) {
-      let specObj = {};
-      let listFormula = rules[name].join("+").split('');
-      for (let val of rules[name]) {
-        specObj[val] = new Array(maxLength).fill(0);
-      }
-      let retObj = getRowDatasByTitleObj(specObj, balanceSheetTable);
-      let resultObj = Object.assign(specObj, retObj);
-      let resultArr = miniCalc(listFormula, resultObj, maxLength);
-      let item = {
-        name: name,
-        data: resultArr,
-        type: 'line',
-        stack: "all",
-        areaStyle: {},
-        smooth: true,
-      }
-      opt.series.push(item);
-    }
-    dispatch(resetOption(opt));
-    setHasEcharts(true);
-  }
-
-
-  // 寻找AppTables中指定名称的表，模糊搜索，找到后返回Table
-  const getCertainTable = (tbName) => {
-    let certainTable;
-    let reg = new RegExp(tbName);
-
-    for (let Table of AppTables) {
-      if (reg.test(Table.fileName)) {
-        certainTable = Table;
-        break;
-      }
-    }
-
-    if (!certainTable) {
-      message.error(`该功能需要${tbName},当前不存在${tbName}`, 3);
-      return false;
-    } else {
-      return certainTable;
-    }
-  }
 
   /* 绘制折线图 */
   const drawLine = () => {
@@ -420,16 +338,6 @@ function App() {
                 </Tooltip>
                 <Tooltip placement="bottomLeft" title="相同的项在不同的表上进行绘制，比如不同银行的ROE" arrowPointAtCenter>
                   <Button type="primary" className="draw_button" onClick={test} disabled>异表绘制</Button>
-                </Tooltip>
-                <Tooltip placement="bottomLeft" title="资产负债表中的资产组成：包括货币资金、无形资产、存货、固定资产在建工程、应收类资产" arrowPointAtCenter>
-                  <Button type="primary" className="draw_button" onClick={drawFundStack}>资产堆积</Button>
-                </Tooltip>
-
-                <Tooltip placement="bottomLeft" title="现金流量表中的现金活动：包括筹资、投资和经营" arrowPointAtCenter>
-                  <Button type="primary" className="draw_button" onClick={drawCrashFlow}>现金流量</Button>
-                </Tooltip>
-                <Tooltip placement="bottomLeft" title="利润表中的各种费用：包括财务、销售、研发、管理费用" arrowPointAtCenter>
-                  <Button type="primary" className="draw_button" onClick={drawCost}>费用构成</Button>
                 </Tooltip>
                 <Button type="primary" className="draw_button" onClick={() => { setIsModalVisible(true) }} ghost>报表示例</Button>
               </div>
