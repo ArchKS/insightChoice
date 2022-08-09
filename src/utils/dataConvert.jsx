@@ -4,6 +4,9 @@ import { isEmpty } from "./getType";
 import getType from "./getType";
 import { HEADERKEY, YearDecorate, columnNameSuffixRe } from "./Variable";
 
+
+import { retDefaultOptions, retDefaultSerieItem } from './echartsData';
+
 // 把xlsx文件解析成json格式的数据
 export function getFirstJsonFromSheet(file) { // json.js
     return new Promise((resolve, reject) => {
@@ -123,56 +126,8 @@ export function getSeriesDataFromDataSource(singleRowData, xAxis) {
     return [title, data];
 }
 
-export function retDefaultOptions() {
-    return {
-        // 需要一个默认的option，且series中需要有一个item，不然reactEcharts不会更新 
-        // :https://github.com/apache/echarts/issues/7896 
-        xAxis: {
-            type: 'category',
-            data: [1, 2, 3, 4]
-        },
-        yAxis: {
-            type: 'value'
-        },
-        series: [],
-        tooltip: {
-            trigger: "axis"
-        },
-        toolbox: {
-            right: "8%",
-            feature: {
-                // saveAsImage: {},
-                // magicType: {
-                //     show: true,
-                //     type: ["line", "bar"]
-                // }
-            }
-        },
-        legend: {
-            left: 'center'
-        },
-    }
-}
 
-export function generateSeriesItem(data, title) {
-    return {
-        data: data,
-        type: 'line',
-        name: title,
-        smooth: true,
-        // markPoint: {
-        //     data: [
-        //         { type: 'max' },
-        //         { type: 'min' },
-        //     ]
-        // },
-        // markLine: {
-        //     data: [
-        //         { type: 'average' }
-        //     ]
-        // }
-    }
-}
+
 
 // default data
 let data = [
@@ -256,14 +211,10 @@ export function convertSpecRowToOption(pointTable, specObj, seriesType = "bar", 
     const seriesArr = []
     opt.xAxis.data = xAxis;
     for (let key in retObj) {
-        let seriesDataObj = generateSeriesItem(retObj[key], key);
-        seriesDataObj.stack = stackType;
-        seriesDataObj.type = seriesType;
-        seriesDataObj.areaStyle = {};
+        let seriesDataObj = retDefaultSerieItem(seriesType, key, retObj[key], { isStack: true });
         seriesArr.push(seriesDataObj);
     }
     opt.series = seriesArr;
-    console.log('opt?:', opt.series);
     return opt;
 }
 
@@ -306,53 +257,6 @@ export function uniq(arr) {
 
 export function getRandomColor() {
     return '#' + Math.floor(Math.random() * 16777215).toString(16);
-}
-
-
-export function level1AndLevel2Combina(table, obj, seriesType = "line", stackType = "all") {
-
-    let ExpendSelected = {};
-
-    for (let val of Object.values(obj).flat(1)) {
-        ExpendSelected[val] = [];
-    }
-
-    // 根据当前表格和想要获取的行，获取opt
-    let opt = convertSpecRowToOption(table, ExpendSelected, seriesType, stackType);
-    let series = opt.series;
-    let seriesNameArr = Object.keys(obj);
-
-    for (let item of series) {
-        let name = item.name.replace(columnNameSuffixRe, '').trim();
-
-        // 赋值
-        for (let seriesName of seriesNameArr) {
-            let segmentNameArr = obj[seriesName];
-            for (let segmentNameIndex in segmentNameArr) {
-                let segmentName = obj[seriesName][segmentNameIndex]; // level2的名称
-                if (segmentName === name) {
-                    obj[seriesName][segmentNameIndex] = item;
-                }
-
-            }
-        }
-    }
-
-    // 相加
-    for (let seriesName of seriesNameArr) {
-
-        console.log(obj[seriesName]);
-
-        let segmentItemArr = obj[seriesName].filter(v => getType(v) === "Object"); // 排除没有值的
-
-        obj[seriesName] = segmentItemArr.reduce((res, v) => {
-            return addObj(res, v)
-        })
-
-        obj[seriesName].name = seriesName; // 改名
-    }
-    opt.series = Object.values(obj).filter(v => JSON.stringify(v) !== '{}');
-    return opt;
 }
 
 // 增长率
@@ -409,7 +313,7 @@ export function OneItemGrowthRate(opt) {
             return s;
         }).join('<br>');
     }
-    opt.xAxis.data = opt.xAxis.data.slice(1);
+    // opt.xAxis.data = opt.xAxis.data.slice(1);
     console.log('OneItemGrowthRate: ', opt);
     return opt;
 }
@@ -431,7 +335,7 @@ export function getGrowthRateArr(rawDataArr) {
                 r = ((a - b) * 100 / b).toFixed(2);
             }
 
-            rateArr[i] = r;
+            rateArr[i+1] = r;
         }
         item.data = rateArr;
         item.name = item.name + "增长率";

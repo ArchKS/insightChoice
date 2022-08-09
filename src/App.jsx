@@ -8,20 +8,18 @@ import LyTabsComponent from './components/LyTabs';
 import LyTableComponent from './components/LyTable';
 import { miniCalc } from './utils/calc'
 import { setIndex } from './store/features/setRowIndex'
-import { resetOption } from './store/features/setOption'
+import setOption, { resetOption } from './store/features/setOption'
 import { columnNameSuffixRe, TABLENAME } from "./utils/Variable";
 import {
   getRate,
   changeOptType,
-  retDefaultOptions,
-  generateSeriesItem,
   getChangeRateFromOpt,
   getRowDatasByTitleObj,
-  convertSpecRowToOption,
   getXaisxDataFromColumns,
   getSeriesDataFromDataSource,
 } from './utils/dataConvert'
-import {  isEmpty } from "./utils/getType";
+import { isEmpty } from "./utils/getType";
+import { retDefaultOptions, retDefaultSerieItem } from './utils/echartsData';
 
 
 
@@ -35,11 +33,34 @@ function App() {
   /* 是否存在报表 */
   let [hasEcharts, setHasEcharts] = React.useState(false);
 
+
+
   const dispatch = useDispatch();
   let { option } = useSelector(store => store.setOption);
   let { ActiveTable, AppTables } = useSelector(store => store.setTable);
   let { selectIndex } = useSelector(store => store.setRowIndex);
   const echartsRef = React.useRef(null);
+
+
+  /* 是否展示数字 */
+  let [isShowDigital, setShowDigital] = React.useState(true);
+
+
+  const setDigital = () => {
+    let newOpt = JSON.parse(JSON.stringify(option));
+    for (let index in newOpt.series) {
+      newOpt.series[index].itemStyle = {
+        normal: {
+          label: {
+            show: !isShowDigital
+          }
+        }
+      }
+    }
+    setShowDigital(!isShowDigital);
+    dispatch(resetOption(newOpt))
+  }
+
 
   const clearOptions = () => {
     // 暴力重置法，不这样清不干净
@@ -56,14 +77,16 @@ function App() {
     // 同一张表，绘制不同的选项
     let xAxis = getXaisxDataFromColumns(ActiveTable.columns);
     option.xAxis.data = xAxis;
+    let originType = getOriginOptType();
     // 根据选中的下标，获取Active表的数据
     option.series = [];
+
     for (let index of selectIndex) {
       let [title, data] = getSeriesDataFromDataSource(ActiveTable.dataSource[index - 1], xAxis);
       title = title.replace(columnNameSuffixRe, '')
-      let seriesDataObj = generateSeriesItem(data, title);
-      seriesDataObj.type = getOriginOptType() || "line";
-      option.series.push(seriesDataObj);
+      let item = retDefaultSerieItem(originType, title, data);
+      console.log('seriesItem:', item);
+      option.series.push(item);
     }
     setHasEcharts(true);
     return option;
@@ -76,6 +99,7 @@ function App() {
       return;
     }
     let opt = genMultiOption();
+    console.log(opt);
     dispatch(resetOption(opt));
   }
 
@@ -199,16 +223,9 @@ function App() {
       let retObj = getRowDatasByTitleObj(specObj, ActiveTable);
       let listFormula = formula.split('');
       let resultArr = miniCalc(listFormula, retObj, maxLength);
-      let item = {
-        name: rowName,
-        data: resultArr,
-        type: 'line',
-        smooth: true,
-      }
-      opt.series.push(item);
+      opt.series.push(retDefaultSerieItem('line', rowName, resultArr));
     }
 
-    console.log(opt);
     dispatch(resetOption(opt));
     setHasEcharts(true);
   }
@@ -293,6 +310,13 @@ function App() {
             <span className="iconfont icon-stack" onClick={stackMultiSelect}></span>
             :
             <span className="iconfont icon-square_stack_d_up_slash_fill" onClick={stackMultiSelect}></span>
+          }
+        </Tooltip>
+        <Tooltip placement="left" title="是否展示数据" arrowPointAtCenter>
+          {isShowDigital ?
+            <span className="iconfont icon-shujushujudian" onClick={setDigital}></span>
+            :
+            <span className="iconfont icon-shujushujudian gray" onClick={setDigital}></span>
           }
         </Tooltip>
 
