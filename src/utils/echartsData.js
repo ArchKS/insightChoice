@@ -36,7 +36,7 @@ export function retDefaultSerieItem(type = "line", name = "", data = [], config 
     isStack: false,
 }) {
     let obj = {
-        type: type,
+        type: type.trim() === "" ? 'line' : type,
         name: name,
         smooth: true,
         data: data,
@@ -62,7 +62,7 @@ export function retDefaultSerieItem(type = "line", name = "", data = [], config 
         }
     }
 
-    if(config.isStack){
+    if (config.isStack) {
         obj.stack = stackType;
         obj.areaStyle = {};
     }
