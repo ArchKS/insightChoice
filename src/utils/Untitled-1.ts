@@ -6,20 +6,9 @@
 */
 
 const isValue = v => /[\u4e00-\u9fa5a-zA-Z0-9]+/.test(v);
+const isDigtal = v => /^[+-]?(\d|([1-9]\d+))(\.\d+)?$/.test(v);
+
 import { isDigital, isEmpty } from "./getType";
-
-
-const Symbols = {
-    leftBrackets: "(（",
-    rightBrackets: ")）",
-    brackets: "()（）",
-    operators: "+-*/",
-    isLeftBrackets: (v) => Symbols.leftBrackets.indexOf(v) >= 0,
-    isRightBrackets: (v) => Symbols.rightBrackets.indexOf(v) >= 0,
-    isBrackets: (v) => Symbols.brackets.indexOf(v) >= 0,
-    isOperators: (v) => Symbols.operators.indexOf(v) >= 0,
-
-}
 
 
 // 两个数字类型数组的操作 
@@ -68,61 +57,74 @@ type TObjData = {
 // let len = obj[Object.keys(obj)[0]].length as number;
 // let arrList = "10-(营业收入/存货价值)".split('') as string[];
 // let result = miniCalc(arrList, obj, len);
+
 export function miniCalc(listArr: string[], objData: TObjData, ARRAYLENGTH: number): number[] {
+    if (isValue(listArr[0])) listArr.unshift("+");
+    if (/[()（）]/.test(listArr[0])) listArr.unshift("+");
+
     let stack: number[][] = [],
         itemName: number[] | string = "",
         sign = "",
-        itemArray: number[] = [];
-
+        index = 0;
     while (listArr.length != 0) {
-        let currentChar = listArr.shift();
-        if (isValue(currentChar)) {
-            itemName += currentChar!;
-        } else if (Symbols.isLeftBrackets(currentChar)) { // 是左括号
-            itemArray = miniCalc(listArr, objData, ARRAYLENGTH);
+        let singleChar = listArr.shift();
+        if (isValue(singleChar)) {
+            itemName += singleChar!;
+        } else if (singleChar === "(" || singleChar === "（") {
+            itemName = miniCalc(listArr, objData, ARRAYLENGTH);
+            console.log('itemName: ',itemName);
         }
-        // 固定=(固定资产+在建工程)/资产总计;
-        if (Symbols.isOperators(currentChar) || listArr.length === 0 || itemArray.length > 0 || Symbols.isRightBrackets(currentChar)) {
-            // console.log(`currentChar:${currentChar},sign:${sign}`);
+
+        if (index === 0) {
+            sign = singleChar!;
+        };
+
+        index++;
+
+        if (itemName && !isValue(singleChar) || listArr.length === 0) {
             let topItemArray;
-            if (itemName && itemArray.length === 0) { // 有itemArray就先用itemArray，没有再构造
-                if (isDigital(itemName)) {
-                    itemArray = new Array(ARRAYLENGTH).fill(+itemName); // 如果是数字，则转为[365,365,365,365]
-                } else if (typeof itemName === 'string') {
-                    itemArray = objData[itemName];
-                    if (!isEmpty(itemName) && itemArray === undefined) {
-                        console.log(`不存在:【${itemName}】， 项目名称只能是数字、字母和中文`);
-                        break;
-                    }
+            let itemNameArray;
+            if (isDigtal(itemName)) {
+                itemNameArray = new Array(ARRAYLENGTH).fill(+itemName); // 如果是数字，则转为[365,365,365,365]
+            } else if (typeof itemName === 'string') {
+                itemNameArray = objData[itemName];
+                if (!isEmpty(itemName) && itemNameArray === undefined) {
+                    // alert(`不存在:【${itemName}】， 项目名称只能是数字、字母和中文`);
+                    console.log(`不存在:【${itemName}】， 项目名称只能是数字、字母和中文`);
+                    break;
                 }
+
+            } else if (typeof itemName === "object") {
+                itemNameArray = itemName;
             }
+
             switch (sign) {
                 case "+":
-                case "": // 第一个，默认加号
-                    stack.push(itemArray);
+                    stack.push(itemNameArray);
                     break;
                 case "-":
-                    stack.push(itemArray.map(v => -Number(v)));
+                    stack.push(itemNameArray.map(v => -Number(v)));
                     break;
                 case "*":
                     topItemArray = stack.pop();
-                    stack.push(mulArr(itemArray, topItemArray));
+                    stack.push(mulArr(itemNameArray, topItemArray));
                     break;
                 case "/":
                     topItemArray = stack.pop();
-                    stack.push(divArr(topItemArray, itemArray));
+                    stack.push(divArr(topItemArray, itemNameArray));
                     break;
             }
-            // console.log(sign, itemArray, topItemArray, listArr.join(''));
             itemName = "";
-            itemArray = [];
-            sign = currentChar!;
+            sign = singleChar!;
         }
 
-
-        if (Symbols.isRightBrackets(currentChar)) break;
+        if (singleChar === ")" || singleChar === "）") {
+            break;
+        }
     }
-    return stack.filter(v => v.length > 0).reduce((a, b) => addArr(a, b));
+
+    let res = stack.reduce((a, b) => addArr(a, b));
+    return res;
 }
 
 

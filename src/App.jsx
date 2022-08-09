@@ -9,7 +9,7 @@ import LyTableComponent from './components/LyTable';
 import { miniCalc } from './utils/calc'
 import { setIndex } from './store/features/setRowIndex'
 import { resetOption } from './store/features/setOption'
-import { columnNameSuffix, TABLENAME } from "./utils/Variable";
+import { columnNameSuffixRe, TABLENAME } from "./utils/Variable";
 import {
   getRate,
   changeOptType,
@@ -64,7 +64,7 @@ function App() {
     option.series = [];
     for (let index of selectIndex) {
       let [title, data] = getSeriesDataFromDataSource(ActiveTable.dataSource[index - 1], xAxis);
-      title = title.replace(columnNameSuffix, '')
+      title = title.replace(columnNameSuffixRe, '')
       let seriesDataObj = generateSeriesItem(data, title);
       seriesDataObj.type = getOriginOptType() || "line";
       option.series.push(seriesDataObj);
@@ -260,13 +260,12 @@ function App() {
     let opt = retDefaultOptions();
     let xAxis = getXaisxDataFromColumns(ActiveTable.columns);
     opt.series = [];
-    opt.xAxis.data = xAxis;
+    opt.xAxis.data = xAxis;;
     iv = iv || "存货周转天数=365/(资产总计/存货);  应收账款周转天数=365/(资产总计/应收票据及应收账款);  固定资产周转天数=365/(资产总计/(固定资产+在建工程));";
     iv = iv.replace(/ /g, '');
     let iarr = iv.split(/;|；/).filter(v => !isEmpty(v));
     for (let iv1 of iarr) {
       let arr = iv1.split('=');
-      console.log(arr);
       if (arr.length !== 2) {
         alert("请输入符合格式的等式");
         return;

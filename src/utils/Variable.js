@@ -6,7 +6,8 @@ export const Ext = /(\.[a-z][A-Z]+)$/i; // 文件扩展名
 
 
 /* ----------------------- Global Variable */
-export const columnNameSuffix = '(亿元)'
+export const columnNameSuffix = '(亿元)';
+export const columnNameSuffixRe = /\(\W{1,4}\)$/; // 替换(亿)、(万)、(万元)等
 
 
 // 上传文件需要用到这些名字

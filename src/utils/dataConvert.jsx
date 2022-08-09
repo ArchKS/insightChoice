@@ -2,7 +2,7 @@ import { deepClone, isDigital } from './getType'
 import * as XLSX from "xlsx";
 import { isEmpty } from "./getType";
 import getType from "./getType";
-import { HEADERKEY, YearDecorate, columnNameSuffix } from "./Variable";
+import { HEADERKEY, YearDecorate, columnNameSuffixRe } from "./Variable";
 
 // 把xlsx文件解析成json格式的数据
 export function getFirstJsonFromSheet(file) { // json.js
@@ -99,6 +99,7 @@ export function getXaisxDataFromColumns(columns) {
 // 将一个TABLE的DataSource数据转为ECAHRTS的Series数据
 // ::::: 缺少排序
 export function getSeriesDataFromDataSource(singleRowData, xAxis) {
+    // console.log(singleRowData,xAxis);
     let title = singleRowData.__EMPTY,
         data = [];
     for (let key in singleRowData) {
@@ -115,7 +116,7 @@ export function getSeriesDataFromDataSource(singleRowData, xAxis) {
         } else if (singleRowData.hasOwnProperty(item)) {
             val = singleRowData[item]; // 如果row的key是2001的话，一般行的key都是 2001年年报
         } else {
-            console.error('dataConvert.ts: line117 用row[2001年年报] & row[2001] 获取不到val的值');
+            // console.error('dataConvert.ts: line117 用row[2001年年报] & row[2001] 获取不到val的值');
         }
         data.push(val);
     }
@@ -210,7 +211,7 @@ export function getRowDataByTitle(specName, table) {
     let dataSource = table.dataSource;
     for (let rowData of dataSource) {
         let [title, data] = getSeriesDataFromDataSource(rowData, xAxis); // title: 财务费用(亿元)  title: 一、营业总收入
-        let fmtTitle = title.replace(columnNameSuffix, '');
+        let fmtTitle = title.replace(columnNameSuffixRe, '');
         if (specName === title || specName === fmtTitle) {
             return data;
         }
@@ -291,7 +292,7 @@ export function getAllColumnName(Table) {
         if (vals.length <= 2) { //除了__EMPTY 还有 lineNumber
             return ""
         } else {
-            return row[HEADERKEY].replace(columnNameSuffix, '');
+            return row[HEADERKEY].replace(columnNameSuffixRe, '');
         }
     });
     return uniq(titles.filter(v => !isEmpty(v)));
@@ -322,7 +323,7 @@ export function level1AndLevel2Combina(table, obj, seriesType = "line", stackTyp
     let seriesNameArr = Object.keys(obj);
 
     for (let item of series) {
-        let name = item.name.replace(columnNameSuffix, '').trim();
+        let name = item.name.replace(columnNameSuffixRe, '').trim();
 
         // 赋值
         for (let seriesName of seriesNameArr) {

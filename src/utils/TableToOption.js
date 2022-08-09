@@ -5,7 +5,7 @@ import {
     retDefaultOptions
 } from "./dataConvert";
 import {
-    columnNameSuffix
+    columnNameSuffixRe
 } from "./Variable";
 
 
@@ -21,7 +21,7 @@ export const constructStackAndFixedKeyOpt = (pointTable, selectObj, seriesType =
     // 获取selectObj中key指定的数据
     for (let row of pointTable.dataSource) {
         let [title, data] = getSeriesDataFromDataSource(row, xAxis); // title: 财务费用(亿元)
-        let fmtTitle = title.replace(columnNameSuffix, '');
+        let fmtTitle = title.replace(columnNameSuffixRe, '');
         for (let key in selectObj) {
             if (key === fmtTitle) {
                 hasDataSelectObj[key] = data;
