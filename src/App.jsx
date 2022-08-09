@@ -413,24 +413,26 @@ function App() {
           </div>
           <div className="settings">
             <div className="normal_btn">
-              <Button type="primary" icon={<ClearOutlined />} className="draw_button" onClick={clearOptions}>重置</Button>
-              <Tooltip placement="bottomLeft" title="不同的项在同一张表上绘制，比如比亚迪的净利润和成本的走势" arrowPointAtCenter>
-                <Button type="primary" className="draw_button" onClick={drawMultiSelect}>绘图</Button>
-              </Tooltip>
-              <Tooltip placement="bottomLeft" title="相同的项在不同的表上进行绘制，比如不同银行的ROE" arrowPointAtCenter>
-                <Button type="primary" className="draw_button" onClick={test} disabled>异表绘制</Button>
-              </Tooltip>
-              <Tooltip placement="bottomLeft" title="资产负债表中的资产组成：包括货币资金、无形资产、存货、固定资产在建工程、应收类资产" arrowPointAtCenter>
-                <Button type="primary" className="draw_button" onClick={drawFundStack}>资产堆积</Button>
-              </Tooltip>
+              <div className="btn_wrapper">
+                <Button type="primary" icon={<ClearOutlined />} className="draw_button" onClick={clearOptions}>重置</Button>
+                <Tooltip placement="bottomLeft" title="不同的项在同一张表上绘制，比如比亚迪的净利润和成本的走势" arrowPointAtCenter>
+                  <Button type="primary" className="draw_button" onClick={drawMultiSelect}>绘图</Button>
+                </Tooltip>
+                <Tooltip placement="bottomLeft" title="相同的项在不同的表上进行绘制，比如不同银行的ROE" arrowPointAtCenter>
+                  <Button type="primary" className="draw_button" onClick={test} disabled>异表绘制</Button>
+                </Tooltip>
+                <Tooltip placement="bottomLeft" title="资产负债表中的资产组成：包括货币资金、无形资产、存货、固定资产在建工程、应收类资产" arrowPointAtCenter>
+                  <Button type="primary" className="draw_button" onClick={drawFundStack}>资产堆积</Button>
+                </Tooltip>
 
-              <Tooltip placement="bottomLeft" title="现金流量表中的现金活动：包括筹资、投资和经营" arrowPointAtCenter>
-                <Button type="primary" className="draw_button" onClick={drawCrashFlow}>现金流量</Button>
-              </Tooltip>
-              <Tooltip placement="bottomLeft" title="利润表中的各种费用：包括财务、销售、研发、管理费用" arrowPointAtCenter>
-                <Button type="primary" className="draw_button" onClick={drawCost}>费用构成</Button>
-              </Tooltip>
-              <Button type="primary" className="draw_button" onClick={() => { setIsModalVisible(true) }} ghost>报表示例</Button>
+                <Tooltip placement="bottomLeft" title="现金流量表中的现金活动：包括筹资、投资和经营" arrowPointAtCenter>
+                  <Button type="primary" className="draw_button" onClick={drawCrashFlow}>现金流量</Button>
+                </Tooltip>
+                <Tooltip placement="bottomLeft" title="利润表中的各种费用：包括财务、销售、研发、管理费用" arrowPointAtCenter>
+                  <Button type="primary" className="draw_button" onClick={drawCost}>费用构成</Button>
+                </Tooltip>
+                <Button type="primary" className="draw_button" onClick={() => { setIsModalVisible(true) }} ghost>报表示例</Button>
+              </div>
             </div>
 
             <div className="mini_search">
