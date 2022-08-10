@@ -34,6 +34,7 @@ export function retDefaultSerieItem(type = "line", name = "", data = [], config 
     isMarkPoint: false,
     isMarkLine: false,
     isStack: false,
+    isPercent: false,
 }) {
     let obj = {
         type: type.trim() === "" ? 'line' : type,
@@ -77,5 +78,10 @@ export function retDefaultSerieItem(type = "line", name = "", data = [], config 
         }
     }
 
+    if (config.isPercent) {
+        obj.data = obj.data.map(v => (v * 100).toFixed(2))
+    } else {
+        obj.data = obj.data.map(v => v.toFixed(2));
+    }
     return obj;
 }

@@ -46,7 +46,7 @@ const calcTwoArray = (arr1: TCalcArray, arr2: TCalcArray, operator: TOperator, i
             case "/": a = Number(a2) === 0 ? inValidValue : a1 / a2; break;
         }
 
-        ret[index] = a === inValidValue ? inValidValue : +Number(a).toFixed(2);
+        ret[index] = a === inValidValue ? inValidValue : +Number(a).toFixed(4);
     }
     return ret;
 }
