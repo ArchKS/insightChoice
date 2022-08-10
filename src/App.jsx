@@ -3,13 +3,13 @@ import { useSelector, useDispatch } from 'react-redux';
 import ReactECharts from "echarts-for-react";
 import { Button, message, Tooltip, Modal, Input } from 'antd';
 import { ClearOutlined } from '@ant-design/icons';
-import Sidebar from './components/Sidebar';
+// import Sidebar from './components/Sidebar';
 import LyTabsComponent from './components/LyTabs';
 import LyTableComponent from './components/LyTable';
 import { miniCalc } from './utils/calc'
 import { setIndex } from './store/features/setRowIndex'
-import setOption, { resetOption } from './store/features/setOption'
-import { columnNameSuffixRe, TABLENAME } from "./utils/Variable";
+import { resetOption } from './store/features/setOption'
+import { columnNameSuffixRe } from "./utils/Variable";
 import {
   getRate,
   changeOptType,
@@ -289,8 +289,6 @@ function App() {
         <Tooltip placement="left" title="锁定/解锁原值" arrowPointAtCenter>
           {isLock ? <span className="iconfont icon-suoding" onClick={() => { setIsLock(!isLock) }}></span> : <span className="iconfont icon-jiesuo" onClick={() => { setIsLock(!isLock) }}></span>}
         </Tooltip>
-
-
         <Tooltip placement="left" title="刷新" arrowPointAtCenter>
           <span className="iconfont icon-Updatereset_" onClick={drawMultiSelect}></span>
         </Tooltip>
@@ -342,9 +340,9 @@ function App() {
           <a href={tableExampleUrl}>{tableExampleUrl}</a>
         </Modal>
       </div>
-      <div className="left_wrapper">
+      {/* <div className="left_wrapper">
         <Sidebar></Sidebar>
-      </div>
+      </div> */}
       <div className="right_wrapper">
         <div className="top">
           <div className="tab">

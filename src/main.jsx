@@ -14,17 +14,4 @@ root.render(
     </Provider>
 );
 
-
-
-// setTimeout(() => {
-//     // eslint-disable-next-line no-restricted-globals
-//     let flag = confirm("是否需要报表数据，点击确定获取");
-//     if (flag) {
-
-//         window.open('https://github.com/ArchKS/archks.github.io/tree/master/TABLE',true);
-//     }
-// }, 1000);
-
-
-
-console.log('%c【UPDATE TIME】-> 2022-08-09 15:39:22','color:#5FD068;margin-left: 20%;padding: 20px;');
+console.log('%c【UPDATE TIME】-> 2022-08-10 09:00:43','color:#5FD068;margin-left: 20%;padding: 20px;');
