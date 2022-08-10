@@ -14,4 +14,4 @@ root.render(
     </Provider>
 );
 
-console.log('%c【UPDATE TIME】-> 2022-08-10 09:00:43','color:#5FD068;margin-left: 20%;padding: 20px;');
+console.log('%c【UPDATE TIME】-> 2022-08-10 09:01:06','color:#5FD068;margin-left: 20%;padding: 20px;');
