@@ -245,7 +245,7 @@ function App() {
 
       let listFormula = formula.split('');
       let resultArr = miniCalc(listFormula, retObj, maxLength);
-      opt.series.push(retDefaultSerieItem('line', rowName, resultArr, { isPercent: _isPercent }));
+      opt.series.push(retDefaultSerieItem('line', rowName, resultArr, { isPercent: _isPercent, isShowNumber: true }));
     }
 
     if (_isPercent) {
