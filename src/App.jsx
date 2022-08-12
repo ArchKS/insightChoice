@@ -20,8 +20,12 @@ import {
 } from './utils/dataConvert'
 import { isEmpty } from "./utils/getType";
 import { retDefaultOptions, retDefaultSerieItem } from './utils/echartsData';
+import { doResize } from './utils/resizer'
 
-
+let isMove = false; // mousedown -> true & moveup -> false;
+let h = 300;
+let tableEl;
+let m_pos = -1;
 
 const { Search } = Input;
 
@@ -40,7 +44,6 @@ function App() {
   let { ActiveTable, AppTables } = useSelector(store => store.setTable);
   let { selectIndex } = useSelector(store => store.setRowIndex);
   const echartsRef = React.useRef(null);
-
 
   /* 是否展示数字 */
   let [isShowDigital, setShowDigital] = React.useState(true);
@@ -368,6 +371,22 @@ function App() {
     )
   }
 
+
+  const doMouseMove = (e) => {
+    if (isMove) {
+      const dy = e.nativeEvent.y - m_pos;
+      m_pos = e.nativeEvent.y;
+      tableEl = document.querySelector(".table");
+      h = h + dy;
+      tableEl.style.height = h + 'px';
+
+      console.log('move: ', isMove, h);
+    }
+
+    // console.log(isMove,e.nativeEvent.y);
+  }
+
+  window.addEventListener("mouseup", () => { isMove = false });
   return (
     <div className="App">
       <div className="global_wrapper">
@@ -386,6 +405,7 @@ function App() {
           <div className="table">
             <LyTableComponent></LyTableComponent>
           </div>
+
           <div className="settings">
             <div className="normal_btn">
               <div className="btn_wrapper">
@@ -405,21 +425,30 @@ function App() {
             </div>
           </div>
         </div>
+
+
         <div className="bottom">
-          {hasEcharts ? renderSettings() : ""}
-          <ReactECharts
-            ref={echartsRef}
-            option={option}
-            theme={"vte"}
-            notMerge={true}
-            lazyUpdate={true}
-            style={{ height: "500px" }}
-          >
-          </ReactECharts>
+          <div className="resize resize-top"></div>
+          <div className="line"></div>
+
+          <div className="sections">
+            {hasEcharts ? renderSettings() : ""}
+            <ReactECharts
+              ref={echartsRef}
+              option={option}
+              theme={"vte"}
+              notMerge={true}
+              lazyUpdate={true}
+              style={{ height: "500px" }}
+            >
+            </ReactECharts>
+          </div>
         </div>
       </div>
     </div>
   );
+
+
 }
 export default App;
 

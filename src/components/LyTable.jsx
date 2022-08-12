@@ -28,7 +28,7 @@ const LyTableComponent = () => {
             rowSelection={rowSelection}
             columns={ActiveTable.columns}
             dataSource={ActiveTable.dataSource}
-            scroll={{ x: 'max-content', y: TableHeight }}
+            scroll={{ x: 'max-content' ,y: TableHeight}}
             pagination={false}
             className="antd_table"
         />

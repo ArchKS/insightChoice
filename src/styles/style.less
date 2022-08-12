@@ -182,9 +182,19 @@ input#sheets {
 .row_content_by_self {}
 
 .summary_content_by_self>* {
-  background-color: @SummaryBgColor;
+  background-color: @SummaryBgColor !important;
+  color: @ExpendBgColor !important;
 }
-
+.summary_content_by_self>*:hover{
+  background-color: @SummaryBgColor !important;
+  color: @ExpendBgColor !important;
+}
+.ant-table-container{
+  position: relative;
+}
 .ant-table-body {
   resize: vertical !important;
+  
 }
+
+

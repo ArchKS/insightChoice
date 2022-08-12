@@ -77,11 +77,10 @@ export function retDefaultSerieItem(type = "line", name = "", data = [], config 
             }
         }
     }
-
+    let multiple = 1;
     if (config.isPercent) {
-        obj.data = obj.data.map(v => (v * 100).toFixed(2))
-    } else {
-        obj.data = obj.data.map(v => v.toFixed(2));
+        multiple = 100;
     }
+    obj.data = obj.data.map(v => (multiple * v).toFixed(2));
     return obj;
 }

@@ -362,7 +362,7 @@ export function getRate(opt) {
                 break;
             }
             if (isDigital(digital)) {
-                totalArr[index] += data[index];
+                totalArr[index] += Number(data[index]);
                 console.log(totalArr[index], data[index]);
             }
         }
@@ -384,6 +384,8 @@ export function getRate(opt) {
             if (!/\d/.test(digital)) {
                 digital = 0;
             }
+
+            console.log('totalArr',totalArr[index]);
             if (totalArr[index] === 0) {
                 data[index] = 0;
             } else {
