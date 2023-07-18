@@ -2,7 +2,7 @@ import { deepClone, isDigital } from './getType'
 import * as XLSX from "xlsx";
 import { isEmpty } from "./getType";
 import getType from "./getType";
-import { HEADERKEY, YearDecorate, columnNameSuffixRe } from "./Variable";
+import { HEADERKEY, YearDecorate, unitRe } from "./Variable";
 
 
 import { retDefaultOptions, retDefaultSerieItem } from './echartsData';
@@ -32,22 +32,39 @@ function getColumnsFromJson(singleTableJson) {
     let columns = [],
         tableFirstLine = singleTableJson[0];
     for (let key in tableFirstLine) {
-        if (/\d+/.test(key)) { // 年份
-            columns.push({
-                title: key.replace(/[^0-9]+/, ''),
-                dataIndex: key,
-                render: (text) => <span>{text} </span>
-            });
-        } else {
+
+        const reportMap = {
+            "年一季报": "Q1",
+            "年中报": "Q2",
+            "年三季报": "Q3",
+            "年年报": "Q4",
+        };
+
+        let itemName = /^\d+$/.test(key) ? key : Object.keys(reportMap).reduce((acc, curr) => {
+            return key.includes(curr) ? key.replace(curr, reportMap[curr]) : acc;
+        }, key);
+
+        itemName = itemName.trim();
+
+        if (key === "__EMPTY") {
             columns.unshift({
-                title: key,
+                title: "__EMPTY",
                 ellipsis: true,
                 dataIndex: key,
                 fixed: 'left',
                 render: (text) => <span>{text} </span>
             });
+        } else if (/^__EMPTY_\d+$/.test(itemName)) {
+
+        } else {
+            columns.push({
+                title: itemName,
+                dataIndex: itemName,
+                render: (text) => <span>{text} </span>
+            });
         }
     }
+    console.log('columns: ', columns);
     return columns;
 }
 
@@ -66,16 +83,38 @@ function getDataFromJson(singleTableJson) {
         tableBody = singleTableJson.slice(0);
     for (let index in tableBody) {
         let val = tableBody[index];
-        for (let key in val) {
-            // eslint-disable-next-line
-            if (/^[\-0-9\.]+$/.test(val[key])) { // \- 考虑负数
-                val[key] = +Number(val[key]).toFixed(2);
-            }
-        }
+        // for (let key in val) {
+        // eslint-disable-next-line
+        // if (/^[\-0-9\.]+$/.test(val[key])) { // \- 考虑负数
+        // val[key] = +Number(val[key]).toFixed(2);
+        // }
+        // }
+
         let newObj = Object.assign({ key: Number(index) + 1 }, val);
         data.push(newObj);
     }
-    return data;
+
+    const reportMap = {
+        "年一季报": "Q1",
+        "年中报": "Q2",
+        "年三季报": "Q3",
+        "年年报": "Q4",
+    };
+
+    const transformedArr = data.map(obj => {
+        let newObject = {};
+        for (let key in obj) {
+            let newKey = Object.keys(reportMap).reduce((acc, curr) => {
+                return key.includes(curr) ? key.replace(curr, reportMap[curr]) : acc;
+            }, key);
+            newObject[newKey] = obj[key];
+        }
+        newObject.__EMPTY = newObject.__EMPTY.replace(unitRe, '').trim();
+        return newObject;
+    });
+
+    console.log(`data: `, transformedArr);
+    return transformedArr;
 }
 
 // 将antd格式的column和data合并，返回数组为 [columns,datas]
@@ -91,7 +130,7 @@ export function getColAndDataFromJson(json) {
 export function getXaisxDataFromColumns(columns) {
     return columns.map(obj => {
         let title = obj.title;
-        if (/^\d+$/.test(title)) {
+        if (/^\d+(Q\d)?$/.test(title)) {
             return title;
         } else {
             return '';
@@ -136,23 +175,6 @@ let data = [
         "2002年年报": "",
         "2003年年报": "",
         "2004年年报": "",
-        "2005年年报": "",
-        "2006年年报": "",
-        "2007年年报": "",
-        "2008年年报": "",
-        "2009年年报": "",
-        "2010年年报": "",
-        "2011年年报": "",
-        "2012年年报": "",
-        "2013年年报": "",
-        "2014年年报": "",
-        "2015年年报": "",
-        "2016年年报": "",
-        "2017年年报": "",
-        "2018年年报": "",
-        "2019年年报": "",
-        "2020年年报": "",
-        "2021年年报": ""
     }
 ]
 
@@ -166,8 +188,9 @@ export function getRowDataByTitle(specName, table) {
     let dataSource = table.dataSource;
     for (let rowData of dataSource) {
         let [title, data] = getSeriesDataFromDataSource(rowData, xAxis); // title: 财务费用(亿元)  title: 一、营业总收入
-        let fmtTitle = title.replace(columnNameSuffixRe, '');
-        if (specName === title || specName === fmtTitle) {
+        // console.log(`unit tag`);
+        // let fmtTitle = title.replace(columnNameSuffixRe, '');
+        if (specName === title/* || specName === fmtTitle */) {
             return data;
         }
     }
@@ -242,8 +265,6 @@ export function getAllColumnName(Table) {
         let vals = Object.values(row).filter(t => !isEmpty(t));
         if (vals.length <= 2) { //除了__EMPTY 还有 lineNumber
             return ""
-        } else {
-            return row[HEADERKEY].replace(columnNameSuffixRe, '');
         }
     });
     return uniq(titles.filter(v => !isEmpty(v)));
@@ -335,7 +356,7 @@ export function getGrowthRateArr(rawDataArr) {
                 r = ((a - b) * 100 / b).toFixed(2);
             }
 
-            rateArr[i+1] = r;
+            rateArr[i + 1] = r;
         }
         item.data = rateArr;
         item.name = item.name + "增长率";
@@ -385,7 +406,7 @@ export function getRate(opt) {
                 digital = 0;
             }
 
-            console.log('totalArr',totalArr[index]);
+            console.log('totalArr', totalArr[index]);
             if (totalArr[index] === 0) {
                 data[index] = 0;
             } else {

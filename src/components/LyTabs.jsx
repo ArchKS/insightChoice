@@ -57,10 +57,12 @@ const LyTabsComponent = () => {
     let keys = Object.keys(files);
     let panesArr = [];
     for (let i = 0; i < keys.length; i++) {
+      
       let key = keys[i];
       let file = files[key];
       let fileName = file.name;
       let isuniq = AppTables.every((table) => table.fileName !== fileName);
+      
       if (isuniq) {
         let json = await getFirstJsonFromSheet(file);
         let [c, d] = getColAndDataFromJson(json); // dataSource没有返回__blank的title
@@ -71,7 +73,6 @@ const LyTabsComponent = () => {
         message.warning(`${fileName} has exists`);
       }
     }
-
     setPanes([...panes,...panesArr]);
   }
 

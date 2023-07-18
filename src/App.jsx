@@ -9,7 +9,6 @@ import LyTableComponent from './components/LyTable';
 import { miniCalc } from './utils/calc'
 import { setIndex } from './store/features/setRowIndex'
 import { resetOption } from './store/features/setOption'
-import { columnNameSuffixRe } from "./utils/Variable";
 import {
   getRate,
   changeOptType,
@@ -29,6 +28,7 @@ let m_pos = -1;
 
 const { Search } = Input;
 
+
 function App() {
   /* isLock 是否锁定原值，如果锁定，则值不会被修改，而是用不同的形式呈现；如果没有锁定，则点击增长率、等会修改EchartsOption的值 */
   let [isLock, setIsLock] = React.useState(true);
@@ -36,7 +36,6 @@ function App() {
   let [isStack, setIsStack] = React.useState(true);
   /* 是否存在报表 */
   let [hasEcharts, setHasEcharts] = React.useState(false);
-
 
 
   const dispatch = useDispatch();
@@ -85,10 +84,16 @@ function App() {
     option.series = [];
 
     for (let index of selectIndex) {
+      console.log(ActiveTable.dataSource[index - 1]);
+      console.log('xAxis: ',xAxis); // xAxis 为空
+
+
       let [title, data] = getSeriesDataFromDataSource(ActiveTable.dataSource[index - 1], xAxis);
-      title = title.replace(columnNameSuffixRe, '')
+
+
+      // console.log(`unit tag`);
+
       let item = retDefaultSerieItem(originType, title, data);
-      console.log('seriesItem:', item);
       option.series.push(item);
     }
     setHasEcharts(true);
@@ -204,6 +209,8 @@ function App() {
 
     let opt = retDefaultOptions();
     let xAxis = getXaisxDataFromColumns(ActiveTable.columns);
+
+    console.log('xAxis',xAxis);
     opt.series = [];
     opt.xAxis.data = xAxis;;
     iv = iv || "存货周转天数=365/(资产总计/存货);  应收账款周转天数=365/(资产总计/应收票据及应收账款);  固定资产周转天数=365/(资产总计/(固定资产+在建工程));";
@@ -244,9 +251,8 @@ function App() {
         }
       }
 
-      console.log(retObj);
-
       let listFormula = formula.split('');
+      console.log(`retObj: `,retObj);
       let resultArr = miniCalc(listFormula, retObj, maxLength);
       opt.series.push(retDefaultSerieItem('line', rowName, resultArr, { isPercent: _isPercent, isShowNumber: true }));
     }
