@@ -84,15 +84,7 @@ function App() {
     option.series = [];
 
     for (let index of selectIndex) {
-      console.log(ActiveTable.dataSource[index - 1]);
-      console.log('xAxis: ',xAxis); // xAxis 为空
-
-
       let [title, data] = getSeriesDataFromDataSource(ActiveTable.dataSource[index - 1], xAxis);
-
-
-      // console.log(`unit tag`);
-
       let item = retDefaultSerieItem(originType, title, data);
       option.series.push(item);
     }
@@ -107,7 +99,6 @@ function App() {
       return;
     }
     let opt = genMultiOption();
-    console.log(opt);
     dispatch(resetOption(opt));
   }
 
@@ -168,7 +159,6 @@ function App() {
 
   /* 绘制柱状图 */
   const drawBar = () => {
-    console.log(option);
     let newOpt = changeOptType(option, 'bar')
     dispatch(resetOption(newOpt));
   }
@@ -210,7 +200,6 @@ function App() {
     let opt = retDefaultOptions();
     let xAxis = getXaisxDataFromColumns(ActiveTable.columns);
 
-    console.log('xAxis',xAxis);
     opt.series = [];
     opt.xAxis.data = xAxis;;
     iv = iv || "存货周转天数=365/(资产总计/存货);  应收账款周转天数=365/(资产总计/应收票据及应收账款);  固定资产周转天数=365/(资产总计/(固定资产+在建工程));";
@@ -252,7 +241,6 @@ function App() {
       }
 
       let listFormula = formula.split('');
-      console.log(`retObj: `,retObj);
       let resultArr = miniCalc(listFormula, retObj, maxLength);
       opt.series.push(retDefaultSerieItem('line', rowName, resultArr, { isPercent: _isPercent, isShowNumber: true }));
     }
@@ -305,7 +293,6 @@ function App() {
     }
 
     let opt = getOpt();
-    console.log(opt);
     for (let index in opt.series) {
       let type = opt.series[index].type;
       if (type === 'line' || type === 'bar') {
@@ -385,11 +372,7 @@ function App() {
       tableEl = document.querySelector(".table");
       h = h + dy;
       tableEl.style.height = h + 'px';
-
-      console.log('move: ', isMove, h);
     }
-
-    // console.log(isMove,e.nativeEvent.y);
   }
 
   window.addEventListener("mouseup", () => { isMove = false });

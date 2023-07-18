@@ -410,3 +410,118 @@ export const sheetBook = {
         "56": "\"上午/下午 \"hh\"時\"mm\"分\"ss\"秒 \""
     }
 }
+
+const sheetJSON =[
+    {
+        "__EMPTY": "资产:",
+        "2002年年报": "",
+        "2003年年报": "",
+        "2018年年报": "",
+        "2019年年报": "",
+        "2020年年报": "",
+        "2021年年报": ""
+    },
+]
+
+export default sheetJSON;
+
+
+// Ali Table .js 
+// const columns = [
+//     { code: "prov", name: "省份", width: 150 },
+//     { code: "confirm", name: "确诊", width: 100, align: "center" },
+//     { code: "cure", name: "治愈", width: 100, align: "center" },
+//     { code: "dead", name: "死亡", width: 100, align: "center" },
+//   ];
+  
+//   const dataSource = [
+//     { prov: "湖北省", confirm: 54406, cure: 4793, dead: 1457 },
+//     {
+//       prov: "广东省",
+//       confirm: 1294,
+//       cure: 409,
+//       dead: 2,
+//     },
+//     {
+//       prov: "河南省",
+//       confirm: 1212,
+//       cure: 390,
+//       dead: 13,
+//     },
+//     {
+//       prov: "浙江省",
+//       confirm: 1162,
+//       cure: 428,
+//       dead: 0,
+//     },
+//     {
+//       prov: "湖南省",
+//       confirm: 1001,
+//       cure: 417,
+//       dead: 2,
+//     },
+//   ];
+  
+
+
+const sheet = {
+    "!ref": "A1:W29",
+    "A1": {
+        "t": "s",
+        "v": "Year / ROE / Company",
+        "r": "<t>Year / ROE / Company</t><phoneticPr fontId=\"1\" type=\"noConversion\"/>",
+        "h": "Year / ROE / Company",
+        "w": "Year / ROE / Company"
+    },
+    "A2": {
+        "t": "s",
+        "v": "市值2022/06",
+        "r": "<t>市值2022/06</t><phoneticPr fontId=\"1\" type=\"noConversion\"/>",
+        "h": "市值2022/06",
+        "w": "市值2022/06"
+    },
+    "C2": {
+        "t": "n",
+        "v": 1.04,
+        "w": "1.04"
+    },
+    "!margins": {
+        "left": 0.7,
+        "right": 0.7,
+        "top": 0.75,
+        "bottom": 0.75,
+        "header": 0.3,
+        "footer": 0.3
+    }
+}
+
+const sheetToJson = [
+  {
+    "Year / ROE / Company": "市值2022/06",
+    招商银行: 1.04,
+    工商银行: 1.32,
+    建设银行: 1.18,
+    中国银行: 0.95,
+    交通银行: 0.36,
+    兴业银行: 0.4,
+    平安银行: 0.28,
+    摩根大通: 2.23,
+    美国银行: 1.72,
+    富国银行: 0.97,
+    汇丰控股: 0.86,
+  },
+  {
+    Year: 1999,
+    招商银行: 17.65,
+    工商银行: 0,
+    建设银行: 0,
+    中国银行: 0,
+    交通银行: 0,
+    兴业银行: 0,
+    平安银行: 0,
+    摩根大通: 0,
+    美国银行: 0,
+    富国银行: 0,
+    汇丰控股: 0,
+  }
+];

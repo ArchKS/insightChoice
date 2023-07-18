@@ -77,7 +77,6 @@ export function miniCalc(listArr: string[], objData: TObjData, ARRAYLENGTH: numb
         }
         // 固定=(固定资产+在建工程)/资产总计;
         if (Symbols.isOperators(currentChar) || listArr.length === 0 || itemArray.length > 0 || Symbols.isRightBrackets(currentChar)) {
-            // console.log(`currentChar:${currentChar},sign:${sign}`);
             let topItemArray;
             if (itemName && itemArray.length === 0) { // 有itemArray就先用itemArray，没有再构造
                 if (isDigital(itemName)) {
@@ -107,7 +106,6 @@ export function miniCalc(listArr: string[], objData: TObjData, ARRAYLENGTH: numb
                     stack.push(divArr(topItemArray, itemArray));
                     break;
             }
-            // console.log(sign, itemArray, topItemArray, listArr.join(''));
             itemName = "";
             itemArray = [];
             sign = currentChar!;

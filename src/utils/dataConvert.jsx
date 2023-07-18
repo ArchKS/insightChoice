@@ -64,7 +64,6 @@ function getColumnsFromJson(singleTableJson) {
             });
         }
     }
-    console.log('columns: ', columns);
     return columns;
 }
 
@@ -113,7 +112,6 @@ function getDataFromJson(singleTableJson) {
         return newObject;
     });
 
-    console.log(`data: `, transformedArr);
     return transformedArr;
 }
 
@@ -141,7 +139,6 @@ export function getXaisxDataFromColumns(columns) {
 // 将一个TABLE的DataSource数据转为ECAHRTS的Series数据
 // ::::: 缺少排序
 export function getSeriesDataFromDataSource(singleRowData, xAxis) {
-    // console.log(singleRowData,xAxis);
     let title = singleRowData.__EMPTY,
         data = [];
     for (let key in singleRowData) {
@@ -188,7 +185,6 @@ export function getRowDataByTitle(specName, table) {
     let dataSource = table.dataSource;
     for (let rowData of dataSource) {
         let [title, data] = getSeriesDataFromDataSource(rowData, xAxis); // title: 财务费用(亿元)  title: 一、营业总收入
-        // console.log(`unit tag`);
         // let fmtTitle = title.replace(columnNameSuffixRe, '');
         if (specName === title/* || specName === fmtTitle */) {
             return data;
@@ -335,7 +331,6 @@ export function OneItemGrowthRate(opt) {
         }).join('<br>');
     }
     // opt.xAxis.data = opt.xAxis.data.slice(1);
-    console.log('OneItemGrowthRate: ', opt);
     return opt;
 }
 
@@ -384,15 +379,12 @@ export function getRate(opt) {
             }
             if (isDigital(digital)) {
                 totalArr[index] += Number(data[index]);
-                console.log(totalArr[index], data[index]);
             }
         }
         if (isNavi) {
             break;
         }
     }
-
-    console.log(totalArr);
 
     if (isNavi) {
         return opt;
@@ -406,16 +398,12 @@ export function getRate(opt) {
                 digital = 0;
             }
 
-            console.log('totalArr', totalArr[index]);
             if (totalArr[index] === 0) {
                 data[index] = 0;
             } else {
                 data[index] = Math.round(+(digital * 100).toFixed(2) / +totalArr[index].toFixed(2));
             }
 
-            if (isNaN(data[index])) {
-                // console.log(`${item.name}, ${data[index]}, digital: ${digital} , totalArr[${index}]:${totalArr[index]}`);
-            }
 
             item.stack = "all";
             item.type = "bar";
@@ -434,9 +422,6 @@ export function getRate(opt) {
         }).join('');
     }
 
-
-
-    console.log(newOpt);
     return newOpt;
 }
 /* 改变Option.series.type的类型 */

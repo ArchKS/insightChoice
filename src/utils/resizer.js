@@ -8,7 +8,6 @@ export function doResize() {
         let dy = e.y - m_pos;
         let h = parseInt(getComputedStyle(topEl).height) + dy;
         topEl.style.height = h + "px";
-        console.log(h);
     }
 
 
