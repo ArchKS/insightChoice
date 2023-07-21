@@ -1,4 +1,4 @@
-export function retDefaultOptions() {
+export function retDefaultOptions(imageName="default") {
     return {
         // 需要一个默认的option，且series中需要有一个item，不然reactEcharts不会更新 
         // :https://github.com/apache/echarts/issues/7896 
@@ -7,7 +7,8 @@ export function retDefaultOptions() {
             data: []
         },
         yAxis: {
-            type: 'value'
+            type: 'value',
+            scale:true , // 不从0开始
         },
         series: [],
         tooltip: {
@@ -16,7 +17,10 @@ export function retDefaultOptions() {
         toolbox: {
             right: "8%",
             feature: {
-                // saveAsImage: {},
+                saveAsImage: {
+                    name: imageName, // 设置下载的文件名，默认为 echarts
+                    pixelRatio: 2 // 设置下载的图片分辨率，默认为 1
+                },
                 // magicType: {
                 //     show: true,
                 //     type: ["line", "bar"]

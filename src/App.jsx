@@ -229,6 +229,7 @@ function App() {
         return;
       }
       let [rowName, formula] = arr;
+      opt.toolbox.feature.saveAsImage.name = rowName;
       formula = formula.replace(/ /g, '');
       let keys = formula.match(/[\u4e00-\u9fa5a-zA-Z0-9]+/g);
       let specObj = {};
@@ -511,7 +512,7 @@ function App() {
               theme={"vte"}
               notMerge={true}
               lazyUpdate={true}
-              style={{ height: "500px" }}
+              style={{ minHeight: "80vh" }}
             >
             </ReactECharts>
           </div>
