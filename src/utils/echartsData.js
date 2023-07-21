@@ -40,6 +40,8 @@ export function retDefaultSerieItem(type = "line", name = "", data = [], config 
         type: type.trim() === "" ? 'line' : type,
         name: name,
         smooth: true,
+        // symbol: 'none',
+        symbolSize: 0,
         data: data,
     };
 

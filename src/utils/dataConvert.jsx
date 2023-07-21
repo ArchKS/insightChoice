@@ -112,6 +112,11 @@ function getDataFromJson(singleTableJson) {
             }, key);
             newObject[newKey] = obj[key];
         }
+        if( "__EMPTY" in newObject ){
+
+        }else{
+            alert("1x1单元格需要为空")
+        }
         newObject.__EMPTY = newObject.__EMPTY.replace(unitRe, '').trim();
         return newObject;
     });
