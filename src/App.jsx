@@ -191,12 +191,96 @@ function App() {
     // 短期偿债能力 =  流动资产 / 流动负债
     // 存货周转率 = 365 - ( 营业成本 / 存货价值 )
     // -> 值为空； 分母值为0； 如果存在自然数； 如果存在括号；
+    let opt ; 
+    if (AppTables.length > 1) { // 多表计算
+      opt = multiTableMiniCalc(iv);
+    } else {
+      if (isEmpty(ActiveTable)) {
+        message.error(`当前不存在报表`);
+        return;
+      }
+      opt = singleTableMiniCalc(iv)
+    }
+    dispatch(resetOption(opt));
+    setHasEcharts(true);
+  }
+
+
+  const multiTableMiniCalc = (iv) => {
     let _isPercent = false;
-    if (isEmpty(ActiveTable)) {
-      message.error(`当前不存在报表`);
-      return;
+    let opt = retDefaultOptions();
+    let xAxis = getXaisxDataFromColumns(ActiveTable.columns);
+
+    opt.series = [];
+    opt.xAxis.data = xAxis;;
+    iv = iv || "存货周转天数=365/(资产总计/存货);  应收账款周转天数=365/(资产总计/应收票据及应收账款);  固定资产周转天数=365/(资产总计/(固定资产+在建工程));";
+
+    if (iv[0] === "%") {
+      iv = iv.slice(1);
+      _isPercent = true;
     }
 
+    iv = iv.replace(/ /g, '');
+    let iarr = iv.split(/;|；/).filter(v => !isEmpty(v));
+    for (let iv1 of iarr) {
+      let arr = iv1.split('=');
+      if (arr.length !== 2) {
+        alert("请输入符合格式的等式");
+        return;
+      }
+      let [rowName, formula] = arr;
+      formula = formula.replace(/ /g, '');
+      let keys = formula.match(/[\u4e00-\u9fa5a-zA-Z0-9]+/g);
+      let specObj = {};
+      for (let key of keys) {
+        // B应收账款，应该支持B1/B2/B3
+        let pruneKey = key.replace(/B\d+/ig, '');
+        specObj[pruneKey] = [];
+      }
+
+      let maxLength = ActiveTable.columns.length - 1;
+
+
+      for (let Table of AppTables) {
+        let { fileName } = Table;
+        fileName = fileName.split(".")[0] + "_" + rowName; // demo.xlsx => demo
+        let retObj = getRowDatasByTitleObj(specObj, Table);
+        for (let key of keys) {
+          if (/^B\d+/.test(key)) { // B1应收账款，应该支持B1/B2/B3
+            let pruneKey = key.replace(/B\d+/ig, '');
+            let moveGap = key.match(/\d+/)[0];
+            let fillzeroArr = new Array(maxLength).fill(0);
+            retObj[key] = [...fillzeroArr.slice(0, moveGap), ...retObj[pruneKey].slice(0, maxLength - moveGap)];
+          }
+        }
+
+        let listFormula = formula.split('');
+        let resultArr = miniCalc(listFormula, retObj, maxLength);
+        opt.series.push(retDefaultSerieItem('line', fileName, resultArr, { isPercent: _isPercent, isShowNumber: true }));
+
+      }
+
+      console.log(`multi calc opt: `, opt);
+    }
+
+    if (_isPercent) {
+      opt.tooltip.formatter = (arr) => {
+        return arr.map(v => {
+          let seriesName = v.seriesName,
+            value = v.value,
+            marker = v.marker;
+          let s = '';
+          s = `${marker} ${seriesName} ${value}%`
+          return s;
+        }).join('<br>');
+      }
+    }
+
+    return opt
+  }
+
+  const singleTableMiniCalc = (iv) => {
+    let _isPercent = false;
     let opt = retDefaultOptions();
     let xAxis = getXaisxDataFromColumns(ActiveTable.columns);
 
@@ -258,8 +342,7 @@ function App() {
       }
     }
 
-    dispatch(resetOption(opt));
-    setHasEcharts(true);
+    return opt
   }
 
   // 设置初始引导弹窗

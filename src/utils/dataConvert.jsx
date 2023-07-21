@@ -46,6 +46,10 @@ function getColumnsFromJson(singleTableJson) {
 
         itemName = itemName.trim();
 
+        if (/^\d{4}$/.test(key)) { // 2022 => 2022Q4
+            itemName = key + 'Q4';
+        }
+
         if (key === "__EMPTY") {
             columns.unshift({
                 title: "__EMPTY",
